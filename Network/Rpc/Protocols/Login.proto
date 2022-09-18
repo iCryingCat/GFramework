@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+package GProto;
+import "GCode.proto";
+
+message LoginReq{
+  int32 qid = 1;
+  string user_name = 2;
+  string password = 3;
+}
+
+message LoginResp{
+  int32 pid = 1;
+  GCode code = 2;
+}

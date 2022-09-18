@@ -1,0 +1,7 @@
+﻿syntax = "proto3";
+package GProto;
+
+enum GCode{
+  ERR=0;
+  OK=1;
+}
