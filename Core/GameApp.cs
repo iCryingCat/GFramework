@@ -29,18 +29,5 @@ namespace GFramework
                 sceneStateController.StateUpdate();
             }
         }
-
-        public void LoadScene(string sceneName)
-        {
-            ISceneState sceneState = null;
-            switch (sceneName)
-            {
-                case "Login":
-                    sceneState = new LoginScene(sceneStateController);
-                    break;
-            }
-
-            sceneStateController.SetState(sceneState, sceneName);
-        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -28,7 +28,6 @@ public static class PathUtil
     /// 打包AssetBundles
     /// </summary>
     public static readonly string AssetBundleRootPath = AssetsPath + "/Resources";
-
     public static readonly string AssetBundleBuildPath = StreamingPath + "/Hotfix/AssetBundles";
     public static readonly string HotFixABFileSavePath_Editor = StreamingPath + "/Hotfix/AssetBundles/Res";
     public static readonly string HotFixLuaFileSavePath_Editor = StreamingPath + "/Hotfix/Lua";
@@ -37,9 +36,7 @@ public static class PathUtil
     /// 热更新
     /// </summary>
     public static readonly string VersionFilePath = StreamingPath + "/Hotfix/VersionFile.txt";
-
     public static readonly string VerifyFilePath = StreamingPath + "/Hotfix/VerifyFile.txt";
-    public static readonly string UIConfigPath = StreamingPath + "/Config/UIPath.json";
 
     /// <summary>
     /// 路径格式化

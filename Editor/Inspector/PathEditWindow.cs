@@ -17,7 +17,7 @@ namespace GFramework
     /// 方便策划和美术添加配置路径
     /// 程序通过配置表生成类文件
     /// </summary>
-    public class CustomWindow : EditorWindow
+    public class PathEditWindow : EditorWindow
     {
         /// <summary>
         /// 打开配置窗口
@@ -25,8 +25,8 @@ namespace GFramework
         [MenuItem(GFM.MENU_ROOT + "Window/Open GFM Config Window", false)]
         public static void OnOpenConfigEditor()
         {
-            CustomWindow configWindow =
-                (CustomWindow) EditorWindow.GetWindow(typeof(CustomWindow), false, "Config Editor", true); //创建窗口
+            PathEditWindow configWindow =
+                (PathEditWindow)EditorWindow.GetWindow(typeof(PathEditWindow), false, "Config Editor", true); //创建窗口
             configWindow.Show();
         }
 
@@ -141,7 +141,7 @@ namespace GFramework
         private static void AddWindow()
         {
             DebugWindow myWindow =
-                (DebugWindow) EditorWindow.GetWindow(typeof(DebugWindow), false, "Debug Window", true); //创建窗口
+                (DebugWindow)EditorWindow.GetWindow(typeof(DebugWindow), false, "Debug Window", true); //创建窗口
             myWindow.Show();
         }
 

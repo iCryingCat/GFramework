@@ -1,3 +1,4 @@
+#if XLua
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -28,3 +29,4 @@ public class LUAManager : Singleton<LUAManager>
         return luaEnv.Global.Get<T>(name);
     }
 }
+#endif

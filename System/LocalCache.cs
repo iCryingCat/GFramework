@@ -11,8 +11,6 @@ namespace GFramework
 {
     public static class LocalCache
     {
-        public static MUser user;
-
         public static void SetData<T>(CacheDefine key, T obj)
         {
             string json = JsonUtility.ToJson(obj);

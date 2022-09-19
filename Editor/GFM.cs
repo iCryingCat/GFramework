@@ -4,9 +4,6 @@ using UnityEngine;
 
 namespace GFramework
 {
-    /// <summary>
-    /// 工作文件夹
-    /// </summary>
     public class WorkFolder
     {
         public string name;
@@ -16,9 +13,6 @@ namespace GFramework
         public List<WorkFolder> sub;
     }
 
-    /// <summary>
-    /// 工作目录
-    /// </summary>
     public class WorkMenu
     {
         public List<WorkFolder> subFolders = new List<WorkFolder>();
@@ -56,7 +50,7 @@ namespace GFramework
             }
         };
 
-        #region 初始化工作目录
+        #region 鍒濆鍖栭」鐩紝鐢熸垚鐩綍
         [MenuItem(MENU_ROOT + "Init", false, 0)]
         public static void SetUp()
         {
@@ -80,7 +74,7 @@ namespace GFramework
         }
         #endregion
 
-        #region 设置资源加载模式
+        #region 璁剧疆璧勬簮鍔犺浇妯″紡
         [MenuItem(MENU_ROOT + "Resorces Load Mode/Local", false)]
         public static void SetLoadModeToLocal()
         {
@@ -107,5 +101,7 @@ namespace GFramework
             }
         }
         #endregion
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#if XLua
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -38,3 +39,4 @@ public class HotfixController : Singleton<HotfixController>
             callback.Invoke();
     }
 }
+#endif

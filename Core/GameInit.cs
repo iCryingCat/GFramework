@@ -1,8 +1,6 @@
-﻿using GameLogic.UI;
-using GFramework;
+﻿using GFramework;
 using GFramework.UI;
 using UnityEngine;
-using XLua;
 
 public class GameInit : MonoBehaviour
 {
@@ -15,6 +13,5 @@ public class GameInit : MonoBehaviour
         NetAgent.Instance.Initialize();
         CameraMgr.Instance.Initialize();
         UICanvas.Initialize();
-        UIMgr.Show<UILogo, VMLogo>();
     }
 }
