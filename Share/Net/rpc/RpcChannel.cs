@@ -17,13 +17,8 @@ namespace GFramework.Network
         protected byte[] buffer;
         // 已用缓冲区大小指针
         protected int receivedByteLen = 0;
-        // 协议名长度
-        private const int PROTO_LEN = 4;
-        // 协议名长度
-        private const int SYN_NUM_LEN = 4;
-        // 包长度字段字节数
-        private int PACK_LEN_LEN = 4;
 
+        protected ChannelConf conf;
         private IProtoDecoder decoder;
 
         private Queue<RpcResponse<IMessage>> responseQueue = new Queue<RpcResponse<IMessage>>();
@@ -64,28 +59,28 @@ namespace GFramework.Network
         {
             int receivedByteLen = data.Length;
             // 当前缓冲区大小小于包大小位大小
-            if (receivedByteLen < PACK_LEN_LEN)
+            if (receivedByteLen < conf.PACK_LEN_LEN)
                 return;
 
             // 读取包大小
-            byte[] packLen = new byte[PACK_LEN_LEN];
-            Array.Copy(data, packLen, PACK_LEN_LEN);
+            byte[] packLen = new byte[conf.PACK_LEN_LEN];
+            Array.Copy(data, packLen, conf.PACK_LEN_LEN);
             int protoLen = BitConverter.ToInt32(packLen, 0);
 
             GLog.P("NetSocket", $"消息长度：{protoLen}");
 
             // 当前包还未接收完
-            if (receivedByteLen - PACK_LEN_LEN < protoLen)
+            if (receivedByteLen - conf.PACK_LEN_LEN < protoLen)
                 return;
 
             // 解析包
             byte[] proto = new byte[protoLen];
-            Array.Copy(data, PACK_LEN_LEN, proto, 0, protoLen);
+            Array.Copy(data, conf.PACK_LEN_LEN, proto, 0, protoLen);
             DecodeProto(proto, protoLen);
 
             // 更新缓冲区
-            receivedByteLen -= PACK_LEN_LEN + protoLen;
-            data = data.Skip(PACK_LEN_LEN + protoLen).Take(receivedByteLen).ToArray();
+            receivedByteLen -= conf.PACK_LEN_LEN + protoLen;
+            data = data.Skip(conf.PACK_LEN_LEN + protoLen).Take(receivedByteLen).ToArray();
             if (receivedByteLen > 0)
                 UnPack(ref data);
         }
@@ -103,10 +98,10 @@ namespace GFramework.Network
             int byteLen = 0;
 
             // 协议id
-            byte[] proto = new byte[PROTO_LEN];
-            Array.Copy(buffer, byteLen, proto, 0, PROTO_LEN);
+            byte[] proto = new byte[conf.PROTO_LEN];
+            Array.Copy(buffer, byteLen, proto, 0, conf.PROTO_LEN);
             int protoNum = BitConverter.ToInt32(proto, 0);
-            byteLen += PROTO_LEN;
+            byteLen += conf.PROTO_LEN;
 
             // 如果协议不存在
             if (!Enum.IsDefined(typeof(EProtoDefine), protoNum))
@@ -116,7 +111,7 @@ namespace GFramework.Network
             GLog.P("PacketSerializer", $"接收到{define}类型消息");
 
             // 读取协议字节
-            int dataLen = packLen - SYN_NUM_LEN - PROTO_LEN;
+            int dataLen = packLen - conf.PROTO_LEN;
             byte[] data = new byte[dataLen];
             Array.Copy(buffer, byteLen, data, 0, dataLen);
 

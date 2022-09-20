@@ -19,5 +19,9 @@ namespace GFramework.Network
         public string ip = "127.0.0.1";
         public int port = 8888;
         public int maxBufferSize = 1024;
+        // 协议名长度
+        public int PROTO_LEN = 4;
+        // 包长度字段字节数
+        public int PACK_LEN_LEN = 4;
     }
 }
