@@ -21,7 +21,7 @@ namespace GFramework
     {
         public Camera uiCamera;
 
-        public void Initialize()
+        public void Setup()
         {
             GameObject uiCam = new GameObject("UICamera", typeof(Camera));
             uiCam._SetParent(GameObject.Find("Game").transform);

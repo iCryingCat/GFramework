@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Mime;
 using System;
 using System.IO;
@@ -53,7 +55,7 @@ public class XlsxParser : Editor
 
     private static void ReadXlsx(string file)
     {
-        GLog.P($"读取 {file}");
+        GLog.P("XlsxGen", $"read {file}");
         using (FileStream fs = new FileStream(file, FileMode.Open))
         {
             IExcelDataReader excelDataReader = ExcelReaderFactory.CreateOpenXmlReader(fs);
@@ -80,16 +82,18 @@ public class XlsxParser : Editor
         // 2: 注释|字段类型|字段名称
         string tableName = sheet.TableName;
         string genTargetPath = Path.Combine(conf.genPath, tableName + ".cs");
-        GLog.P($"生成 {genTargetPath}");
+        GLog.P("XlsxGen", $"gen cs {genTargetPath}");
         CSClassGenner classGenner = new CSClassGenner(tableName);
         using (FileStream fs = new FileStream(genTargetPath, FileMode.Create))
         {
             DataRow row0 = sheet.Rows[0];
             DataRow row1 = sheet.Rows[1];
-            classGenner.description = row0.IsNull(0) ? string.Empty : row0[0].ToString();
+            if (!row0.IsNull(0))
+                classGenner.description = row0[0].ToString();
             for (int i = 0; i < columnsNum; ++i)
             {
-                string unit = (string)(row1[i] ?? string.Empty);
+                if (row1.IsNull(i)) throw new NoNullAllowedException();
+                string unit = row1[i].ToString();
                 string[] field = unit.Split('|');
                 if (field.Length < 3)
                     throw new Exception("请检查字段格式：注释|字段类型|字段名称");
@@ -109,29 +113,62 @@ public class XlsxParser : Editor
     {
         int columnsNum = sheet.Columns.Count;
         int rowsNum = sheet.Rows.Count;
-        if (rowsNum < 2) return;
+        if (rowsNum < 4) return;
         // 第1行：表注释
-        // 2: 注释|字段类型|字段名称
+        // 2: 注释
+        // 3: 字段类型
+        // 4: 字段名称
         string tableName = sheet.TableName;
-        string genTargetPath = Path.Combine(conf.genPath, tableName + ".cs");
-        GLog.P($"生成 {genTargetPath}");
-        CSClassGenner classGenner = new CSClassGenner(tableName);
+        string genTargetPath = Path.Combine(conf.genPath, tableName + ".lua");
+        GLog.P("XlsxGen", $"gen lua {genTargetPath}");
+        LuaGenner luaGenner = new LuaGenner(tableName);
         using (FileStream fs = new FileStream(genTargetPath, FileMode.Create))
         {
             DataRow row0 = sheet.Rows[0];
             DataRow row1 = sheet.Rows[1];
-            classGenner.description = row0.IsNull(0) ? string.Empty : row0[0].ToString();
+            DataRow row2 = sheet.Rows[2];
+            DataRow row3 = sheet.Rows[3];
+            List<string> descList = new List<string>();
+            List<string> typeList = new List<string>();
+            List<string> nameList = new List<string>();
+            if (!row0.IsNull(0))
+                luaGenner.description = row0[0].ToString();
             for (int i = 0; i < columnsNum; ++i)
             {
-                string unit = (string)(row1[i] ?? string.Empty);
-                string[] field = unit.Split('|');
-                if (field.Length < 3)
-                    throw new Exception("请检查字段格式：注释|字段类型|字段名称");
-                classGenner.AddDiscription(field[0]);
-                classGenner.AddPublicField(field[1], field[2]);
+                if (row2.IsNull(i)) throw new NoNullAllowedException();
+                if (row3.IsNull(i)) throw new NoNullAllowedException();
+                string desc = (string)(row1[i] ?? string.Empty);
+                string type = row2[i].ToString();
+                string name = row3[i].ToString();
+                descList.Add(desc);
+                typeList.Add(type);
+                nameList.Add(name);
             }
-
-            byte[] bytes = classGenner.EncodeToByte();
+            for (int i = 4; i < rowsNum; ++i)
+            {
+                for (int j = 0; j < columnsNum; ++j)
+                {
+                    DataRow row = sheet.Rows[i];
+                    switch (typeList[j])
+                    {
+                        case "number":
+                            luaGenner.AddNumber(nameList[j], row[j].ToString());
+                            break;
+                        case "string":
+                            luaGenner.AddString(nameList[j], row[j].ToString());
+                            break;
+                        case "list<number>":
+                            luaGenner.AddListNumber(nameList[j], row[j].ToString().Split('|'));
+                            break;
+                        case "list<string>":
+                            luaGenner.AddListString(nameList[j], row[j].ToString().Split('|'));
+                            break;
+                        default:
+                            throw new Exception($"不支持该类型{typeList[j]}");
+                    }
+                }
+            }
+            byte[] bytes = luaGenner.EncodeToByte();
             fs.Write(bytes, 0, bytes.Length);
             fs.Close();
             fs.Dispose();

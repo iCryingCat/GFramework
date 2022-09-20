@@ -26,7 +26,7 @@ namespace GFramework
             if (Solution.loadMode == ResLoadMode.Local)
             {
                 string path = PathUtil.Combine(new string[] { bundleName, assetName });
-                GLog.P($"load resource with local mode at path : {path}");
+                GLog.P("ResMgr", $"load resource with local mode at path : {path}");
                 return AssetMgr.Load<T>(path);
             }
 #endif

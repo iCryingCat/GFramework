@@ -34,7 +34,7 @@ namespace GFramework.UI
         private static Dictionary<EUILayer, Dictionary<EUINode, Transform>> uiMap =
             new Dictionary<EUILayer, Dictionary<EUINode, Transform>>();
 
-        public static void Initialize()
+        public static void Setup()
         {
             GameObject rootPreb = ResMgr.LoadUI<GameObject>("UIRoot.prefab");
             Transform root = ResMgr.Instantiate<GameObject>(rootPreb).transform;

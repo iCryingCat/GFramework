@@ -15,25 +15,27 @@ namespace GFramework
     /// <summary>
     /// 网络管理器
     /// </summary>
-    public class NetAgent: Singleton<NetAgent>
+    public class NetAgent : Singleton<NetAgent>
     {
-        /// <summary>
-        /// 大厅Rpc
-        /// </summary>
+        // 大厅Rpc
         public HallRpc hallRpc;
 
         public NetStatHandler netStat = new NetStatHandler(NetStat.NotConnect);
 
-        public void Initialize()
+        public void Setup()
         {
-            ChannelConf conf = new ChannelConf()
+            GenRpcServer();
+        }
+
+        public void GenRpcServer()
+        {
+            ChannelConf define = new ChannelConf()
             {
                 ip = "127.0.0.1",
                 port = 8888,
                 maxBufferSize = 2048,
             };
-
-            hallRpc = new HallRpc(new TcpChannel(conf.ip, conf.port, conf.maxBufferSize));
+            hallRpc = new HallRpc(new TcpChannel(define, new LogicDecoder()));
         }
     }
 }

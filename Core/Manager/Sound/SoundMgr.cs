@@ -9,24 +9,18 @@ using UnityEngine;
 
 namespace GFramework
 {
-    /// <summary>
-    /// ±³¾°ÒôÀÖID
-    /// </summary>
     public enum BgmID
     {
 
     }
 
-    /// <summary>
-    /// ÒôĞ§ID
-    /// </summary>
     public enum SoundID
     {
 
     }
 
     /// <summary>
-    /// ÒôĞ§¹ÜÀíÆ÷
+    /// ï¿½ï¿½Ğ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class SoundMgr : DntdMonoSingleton<SoundMgr>
@@ -49,7 +43,7 @@ namespace GFramework
 
         public void Initialize()
         {
-            // ¶ÁÅäÖÃ±í
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ã±ï¿½
         }
 
         private void LoadAsset()

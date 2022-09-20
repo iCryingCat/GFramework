@@ -17,7 +17,7 @@ namespace GFramework
         public JsonStream(string path)
         {
             if (!File.Exists(path))
-                GLog.Throw(string.Format("file path {0} is not exist", path));
+                throw new Exception(string.Format("file path {0} is not exist", path));
             this.filePath = path;
             using (StreamReader streamReader = new StreamReader(filePath, Encoding.UTF8))
             {

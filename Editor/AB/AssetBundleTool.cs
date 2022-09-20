@@ -25,7 +25,7 @@ namespace GFramework
             // 检查是否存在需要打包AB的路径
             if (!Directory.Exists(rootPath))
             {
-                GLog.E("不存在AssetBundle打包路径{0}", rootPath);
+                GLog.E("AssetBundleTool", $"不存在AssetBundle打包路径{rootPath}");
                 return;
             }
             // 更新版本文件
@@ -35,7 +35,7 @@ namespace GFramework
                 versionFile.Position = 0;
                 byte[] buffer = Encoding.UTF8.GetBytes(Constant.NextVersion);
                 versionFile.Write(buffer, 0, buffer.Length);
-                GLog.P("Build version file success");
+                GLog.P("AssetBundleTool", "Build version file success");
             }
             // 清空旧的校验文件
             using (FileStream verifyFile = new FileStream(verifyFilePath, FileMode.Create))
@@ -46,9 +46,9 @@ namespace GFramework
             ClearOldAssetBundles();
             Pack(rootPath);
             BuildAssetBundles(buildPath, BuildTarget.StandaloneWindows);
-            GLog.P("Build AssetBundle success");
+            GLog.P("AssetBundleTool", "Build AssetBundle success");
             BuildVerifyFile(buildPath);
-            GLog.P("Build verify file success");
+            GLog.P("AssetBundleTool", "Build verify file success");
             AssetDatabase.Refresh();
         }
 

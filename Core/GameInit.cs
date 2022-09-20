@@ -10,8 +10,10 @@ public class GameInit : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(this);
-        NetAgent.Instance.Initialize();
-        CameraMgr.Instance.Initialize();
-        UICanvas.Initialize();
+        // NetAgent.Instance.Setup();
+        // CameraMgr.Instance.Setup();
+        // UICanvas.Setup();
+        string[] args = { "dda", "dasdasd" };
+        GLog.P("init", args);
     }
 }

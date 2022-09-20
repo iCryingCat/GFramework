@@ -25,7 +25,7 @@ namespace GFramework
         {
             if (SceneManager.GetSceneByName(last.ToString()) == null || SceneManager.GetSceneByName(next.ToString()) == null)
             {
-                GLog.E($"请检查场景ID{last} 或 {next} 是否正确");
+                GLog.E("SceneMgr", $"请检查场景ID{last} 或 {next} 是否正确");
                 return;
             }
             SceneMgr.last = last;

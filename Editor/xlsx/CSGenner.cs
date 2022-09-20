@@ -22,8 +22,8 @@ namespace gframework
         {
             StringBuilder sb = new StringBuilder();
             string classBegin = $"public class {this.className} {{";
-            string classEnd = $"}}";
-            sb.AppendLine(this.GetDiscription(this.description));
+            string classEnd = "}";
+            sb.AppendLine(this.GenDescription(this.description));
             sb.AppendLine(classBegin);
             sb.Append(this.body);
             sb.AppendLine(classEnd);
@@ -32,20 +32,20 @@ namespace gframework
 
         public void AddDiscription(string disc)
         {
-            this.body.AppendLine(GetDiscription(disc));
-        }
-
-        private string GetDiscription(string disc)
-        {
-            return $"// {disc}";
+            this.body.AppendLine(GenDescription(disc));
         }
 
         public void AddPublicField(string fieldType, string fieldName)
         {
-            this.body.AppendLine(GetPublicField(fieldType, fieldName));
+            this.body.AppendLine(GenPublicField(fieldType, fieldName));
         }
 
-        private string GetPublicField(string fieldType, string fieldName)
+        private string GenDescription(string disc)
+        {
+            return $"// {disc}";
+        }
+
+        private string GenPublicField(string fieldType, string fieldName)
         {
             return $"public {fieldType} {fieldName};";
         }

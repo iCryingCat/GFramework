@@ -22,7 +22,7 @@ namespace GFramework
                     MD5 md5 = new MD5CryptoServiceProvider();
                     byte[] buffer = md5.ComputeHash(stream);
                     StringBuilder sb = new StringBuilder();
-                    for(int i = 0; i < buffer.Length; i++)
+                    for (int i = 0; i < buffer.Length; i++)
                     {
                         // X2转化为16进制
                         sb.Append(buffer[i].ToString("X2"));
@@ -32,7 +32,7 @@ namespace GFramework
             }
             catch (Exception ex)
             {
-                GLog.Throw(ex.Message);
+                throw new Exception(ex.Message);
             }
             return null;
         }

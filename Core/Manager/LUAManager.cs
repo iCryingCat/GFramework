@@ -4,16 +4,15 @@ using System.Text;
 using UnityEngine;
 using XLua;
 
-public class LUAManager : Singleton<LUAManager>
+public class LuaManager : Singleton<LuaManager>
 {
     private LuaEnv luaEnv = new LuaEnv();
 
-    public LUAManager()
+    public LuaManager()
     {
         this.luaEnv.AddLoader(GLoader);
         this.luaEnv.DoString("require 'g_loader'");
     }
-
 
     const string luaPath = "GameLogic/Lua";
     byte[] GLoader(ref string path)

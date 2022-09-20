@@ -25,7 +25,7 @@ public class UIMgr
     {
         if (!singletonViewMap.ContainsKey(typeof(T)))
         {
-            GLog.Throw(string.Format("The panel {0} does not exist", typeof(T)));
+            throw new Exception(string.Format("The panel {0} does not exist", typeof(T)));
         }
         return (T)singletonViewMap[typeof(T)];
     }
