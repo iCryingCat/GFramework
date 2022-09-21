@@ -10,7 +10,7 @@ namespace GFramework.Network
     // 逻辑服协议解析器
     public class LogicDispatch : ProtoDispatcher
     {
-        private Queue<Action<IMessage>> responseQueue = new Queue<Action<IMessage>>();
+        private Queue<RpcResponse> responseQueue = new Queue<RpcResponse>();
 
         public override void DecodeForm(E_ProtoDefine define, byte[] data)
         {
@@ -18,8 +18,7 @@ namespace GFramework.Network
             switch (define)
             {
                 case E_ProtoDefine.C2S_Login:
-                    GLog.P("LogicDispatch", "C2S_Login");
-                    Dispatch(define, LoginResp.Descriptor.Parser.ParseFrom(data));
+                    Dispatch(define, (LoginResp)LoginResp.Descriptor.Parser.ParseFrom(data));
                     break;
                 default:
                     GLog.E("LogicDispatch", $"没有找到协议--{define}--的定义！！！");
@@ -28,9 +27,9 @@ namespace GFramework.Network
             GLog.P("LogicDispatch", $"分发完成！！！");
         }
 
-        public override void RegisterMsg(Action<IMessage> response)
+        public override void RegisterMsg(RpcResponse response)
         {
-            if (responseQueue == null) responseQueue = new Queue<Action<IMessage>>();
+            if (responseQueue == null) responseQueue = new Queue<RpcResponse>();
             lock (this.responseQueue)
             {
                 this.responseQueue.Enqueue(response);

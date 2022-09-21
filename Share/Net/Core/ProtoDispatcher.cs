@@ -23,7 +23,7 @@ namespace GFramework.Network
         }
 
         public abstract void DecodeForm(E_ProtoDefine define, byte[] data);
-        public abstract void RegisterMsg(Action<IMessage> response);
+        public abstract void RegisterMsg(RpcResponse response);
         public abstract void Dispatch(E_ProtoDefine define, IMessage msg);
 
         /// <summary>

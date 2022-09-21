@@ -23,7 +23,7 @@ namespace GFramework.Network
         }
 
         // FIXME: 注册回调事件结构有待改善
-        public void RegisterMsg(Action<IMessage> response)
+        public void RegisterMsg(RpcResponse response)
         {
             this.dispatch.RegisterMsg(response);
         }

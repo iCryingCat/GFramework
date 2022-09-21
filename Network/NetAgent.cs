@@ -19,7 +19,7 @@ namespace GFramework.Network
     public class NetAgent : Singleton<NetAgent>
     {
         // 大厅Rpc
-        public HallRpc hallRpc;
+        public HallRpc hallRpc { get; private set; }
 
         public NetStatHandler netStat = new NetStatHandler(NetStat.NotConnect);
 
@@ -28,13 +28,6 @@ namespace GFramework.Network
             TcpClientProxy proxy = new TcpClientProxy(new LogicDispatch());
             proxy.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
             this.hallRpc = new HallRpc(proxy);
-
-            hallRpc.Login(new LoginReq() { UserName = "2447461103", Password = "123456" }, OnLoginResp);
-        }
-
-        private void OnLoginResp(LoginResp resp)
-        {
-            GLog.P("NetAgent", resp.Code);
         }
     }
 }

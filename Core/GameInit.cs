@@ -1,5 +1,5 @@
 ﻿using GFramework.Network;
-
+using GFramework.UI;
 using UnityEngine;
 
 public class GameInit : MonoBehaviour
@@ -11,12 +11,6 @@ public class GameInit : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         NetAgent.Instance.Setup();
-        // CameraMgr.Instance.Setup();
-        // UICanvas.Setup();
-    }
-
-    private void OnDestroy()
-    {
-
+        LuaManager.Instance.Setup();
     }
 }

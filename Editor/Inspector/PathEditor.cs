@@ -10,7 +10,7 @@ namespace GFramework
     /// 方便策划和美术添加配置路径
     /// 程序通过配置表生成类文件
     /// </summary>
-    public class PathEditWindow : EditorWindow
+    public class PathEditor : EditorWindow
     {
         /// <summary>
         /// 打开配置窗口
@@ -18,8 +18,8 @@ namespace GFramework
         [MenuItem(GFM.MENU_ROOT + "Window/Open GFM Config Window", false)]
         public static void OnOpenConfigEditor()
         {
-            PathEditWindow configWindow =
-                (PathEditWindow)EditorWindow.GetWindow(typeof(PathEditWindow), false, "Config Editor", true); //创建窗口
+            PathEditor configWindow =
+                (PathEditor)EditorWindow.GetWindow(typeof(PathEditor), false, "Config Editor", true); //创建窗口
             configWindow.Show();
         }
 

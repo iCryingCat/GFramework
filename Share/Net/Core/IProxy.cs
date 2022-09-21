@@ -14,6 +14,6 @@ namespace GFramework.Network
     public interface IClientProxy
     {
         void Connect(IPEndPoint iPEndPoint);
-        void RegisterMsg(Action<IMessage> response);
+        void RegisterMsg(RpcResponse response);
     }
 }

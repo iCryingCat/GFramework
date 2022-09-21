@@ -6,7 +6,7 @@ namespace GFramework.UI
     {
         public IView bindingView;
 
-        public virtual void Initialize()
+        public virtual void Init()
         {
 
         }

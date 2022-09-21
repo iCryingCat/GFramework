@@ -1,4 +1,6 @@
-﻿using GFramework.Core;
+﻿using System.IO;
+using GFramework.Core;
+using GFramework.Util;
 using UnityEngine;
 
 namespace GFramework
@@ -20,7 +22,7 @@ namespace GFramework
 #if UNITY_EDITOR
             if (Solution.loadMode == ResLoadMode.Local)
             {
-                string path = PathUtil.Combine(new string[] { bundleName, assetName });
+                string path = Path.Combine(bundleName, assetName);
                 GLog.P("ResMgr", $"load resource with local mode at path : {path}");
                 return AssetMgr.Load<T>(path);
             }
@@ -36,8 +38,8 @@ namespace GFramework
         /// <returns></returns>
         public static T LoadUI<T>(string name) where T : UnityEngine.Object
         {
-            string assetName = PathUtil.Suffix(name);
-            string bundleName = PathUtil.Combine(new string[] { ResConf.UI, PathUtil.Prefix(name) });
+            string assetName = name.GetLastFileName();
+            string bundleName = Path.Combine(ResConf.UI, name.GetLastFileName());
             return Load<T>(bundleName, assetName);
         }
 

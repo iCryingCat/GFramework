@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.IO;
 using UnityEngine;
 
 namespace GFramework
@@ -35,8 +35,8 @@ namespace GFramework
             string[] dependencies = manifest.GetAllDependencies(bundleName);
             for (int i = 0; i < dependencies.Length; ++i)
             {
-                var dep = AssetBundle.LoadFromFile(PathUtil.Combine(new string[] {Application.streamingAssetsPath,
-                    dependencies[i]}));
+                var dep = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath,
+                    dependencies[i]));
             }
 
             var asset = ab.LoadAsset<T>(assetName);

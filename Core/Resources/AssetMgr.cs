@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.IO;
+using UnityEditor;
 
 namespace GFramework
 {
@@ -9,13 +10,18 @@ namespace GFramework
     {
         private static string LoadPath(string path)
         {
-            return PathUtil.Combine(new string[] { "Assets", path });
+            return Path.Combine(new string[] { "Assets", path });
         }
 
         public static T Load<T>(string path) where T : UnityEngine.Object
         {
+#if UNITY_EDITOR
             var pref = AssetDatabase.LoadAssetAtPath<T>(LoadPath(path));
             return pref;
+#else
+            var pref = Resources.Load<T>(LoadPath(path));
+            return pref;
+#endif
         }
     }
 }

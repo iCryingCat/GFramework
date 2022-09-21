@@ -3,34 +3,26 @@ using System.Collections.Generic;
 using GFramework.UI;
 using UnityEngine;
 
-namespace GFramework
+namespace GFramework.UI
 {
     public class UIBinder : MonoBehaviour
     {
-        public EUILayer layer;
-        public EUINode node;
+        public E_UILayer layer;
+        public E_UINode node;
         [HideInInspector] public List<UIVar> varsArr = new List<UIVar>();
 
-        public GameObject GetGO(string key)
+        public GameObject GetGO(int index)
         {
-            for (int i = 0; i < this.varsArr.Count; ++i)
-            {
-                if (this.varsArr[i].fieldName == key)
-                    return this.varsArr[i].gameObject;
-            }
-
-            return null;
+            if (index >= this.varsArr.Count)
+                return null;
+            return this.varsArr[index].gameObject;
         }
 
-        public T GetVar<T>(string key) where T : Component
+        public T GetVar<T>(int index) where T : Component
         {
-            for (int i = 0; i < this.varsArr.Count; ++i)
-            {
-                if (this.varsArr[i].fieldName == key)
-                    return this.varsArr[i].component as T;
-            }
-
-            return null;
+            if (index >= this.varsArr.Count)
+                return null;
+            return this.varsArr[index].component as T;
         }
     }
 

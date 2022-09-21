@@ -5,12 +5,18 @@ using GFramework;
 using GFramework.UI;
 
 using UnityEngine;
+#if XLua
+using XLua;
+#endif
 
 /// <summary>
 /// UI管理类
 /// 面板层级管理
 /// 进出UI栈显示隐藏面板
 /// </summary>
+#if XLua
+[LuaCallCSharp]
+#endif
 public class UIMgr
 {
     // 单例ui
@@ -40,7 +46,7 @@ public class UIMgr
     {
         T1 view = new T1();
         view.parent = parent;
-        string name = view.BindPrefabPath();
+        string name = view.BindingPath();
         GameObject uiPref = ResMgr.LoadUI<GameObject>(name);
         GameObject uiGO = ResMgr.Instantiate(uiPref);
         Debug.Assert(uiGO);
@@ -48,7 +54,7 @@ public class UIMgr
         T2 viewModel = new T2();
         viewModel.bindingView = view;
         view.BindingContext = viewModel;
-        viewModel.Initialize();
+        viewModel.Init();
         return view;
     }
 

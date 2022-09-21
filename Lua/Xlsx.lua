@@ -1,3 +1,0 @@
-XLSX = {}
-
-return XLSX;

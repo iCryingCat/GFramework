@@ -24,8 +24,10 @@ namespace GFramework
     /// </summary>
     public interface IView
     {
+        string BindingPath();
         void Show();
+        void Hide();
         void Close();
-        string BindPrefabPath();
+        void Dispose();
     }
 }

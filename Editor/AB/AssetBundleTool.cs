@@ -4,6 +4,7 @@ using System.Text;
 using UnityEditor;
 
 using UnityEngine;
+using GFramework.Util;
 
 namespace GFramework
 {
@@ -88,19 +89,20 @@ namespace GFramework
             }
         }
 
+        // TODO:路径名存在问题
         /// <summary>
         /// 设置AB名称：文件路径名
         /// </summary>
         /// <param name="file"></param>
         private static void SetName(string file)
         {
-            string path = PathUtil.Format(file);
+            string path = file.PathFormat();
             string assetPath = "Assets" + path.Substring(PathUtil.AssetsPath.Length);
             AssetImporter assetImporter = AssetImporter.GetAtPath(assetPath);
 
             string namePath = path.Substring(PathUtil.AssetsPath.Length + 1);
             namePath = namePath.Substring(namePath.IndexOf("/") + 1);
-            string name = namePath.Replace(PathUtil.Suffix(namePath), "unity3d");
+            string name = namePath.Replace(namePath.GetLastFileName(), "unity3d");
             assetImporter.assetBundleName = name;
         }
 
@@ -133,7 +135,7 @@ namespace GFramework
                 {
                     if (!files[i].FullName.EndsWith(".meta"))
                     {
-                        string fullName = PathUtil.Format(files[i].FullName);
+                        string fullName = files[i].FullName.PathFormat();
                         string assetPath = fullName.Substring(PathUtil.AssetsPath.Length + 1);
                         assetPath = assetPath.Substring(assetPath.IndexOf('/') + 1);
                         string md5 = MD5Helper.Encode(fullName);

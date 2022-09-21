@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace GFramework.UI
 {
-    [UIAttr]
     public abstract class BaseView<T> : IView, IBinding<T> where T : BaseViewModel
     {
         // 父节点 
@@ -80,12 +79,18 @@ namespace GFramework.UI
             this.OnClosing();
             this.gameObject.SetActive(false);
             this.OnClosed();
-            this.Disposed = true;
         }
 
-        protected T GetVar<T>(string id) where T : Component
+        public void Dispose()
         {
-            return uiBinder.GetVar<T>(id);
+            this.gameObject.SetActive(false);
+            this.Disposed = true;
+            UnityEngine.GameObject.Destroy(this.gameObject);
+        }
+
+        protected T GetVar<T>(int index) where T : Component
+        {
+            return uiBinder.GetVar<T>(index);
         }
 
         public void BindGO(GameObject go)
@@ -104,7 +109,7 @@ namespace GFramework.UI
             this.OnLoaded();
         }
 
-        public abstract string BindPrefabPath();
+        public abstract string BindingPath();
         protected abstract void BindVars();
         protected virtual void BindEvents() { }
         protected virtual void OnLoaded() { }

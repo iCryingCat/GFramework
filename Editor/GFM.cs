@@ -77,29 +77,29 @@ namespace GFramework
         #endregion
 
         #region 设置资源加载模式
-        [MenuItem(MENU_ROOT + "Resorces Load Mode/Local", false)]
+        [MenuItem(MENU_ROOT + "Resources Load Mode/Local", false)]
         public static void SetLoadModeToLocal()
         {
             Solution.loadMode = ResLoadMode.Local;
-            string path = MENU_ROOT + "Resorces Load Mode/Local";
+            string path = MENU_ROOT + "Resources Load Mode/Local";
             bool isSelected = Menu.GetChecked(path);
             if (!isSelected)
             {
                 Menu.SetChecked(path, true);
-                Menu.SetChecked(MENU_ROOT + "Resorces Load Mode/AssetBundle", false);
+                Menu.SetChecked(MENU_ROOT + "Resources Load Mode/AssetBundle", false);
             }
         }
 
-        [MenuItem(MENU_ROOT + "Resorces Load Mode/AssetBundle", false)]
+        [MenuItem(MENU_ROOT + "Resources Load Mode/AssetBundle", false)]
         public static void SetLoadModeToAB()
         {
             Solution.loadMode = ResLoadMode.AssetBundle;
-            string path = MENU_ROOT + "Resorces Load Mode/AssetBundle";
+            string path = MENU_ROOT + "Resources Load Mode/AssetBundle";
             bool isSelected = Menu.GetChecked(path);
             if (!isSelected)
             {
                 Menu.SetChecked(path, true);
-                Menu.SetChecked(MENU_ROOT + "Resorces Load Mode/Local", false);
+                Menu.SetChecked(MENU_ROOT + "Resources Load Mode/Local", false);
             }
         }
         #endregion

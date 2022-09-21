@@ -9,7 +9,7 @@ namespace GFramework.UI
     /// UI层级
     /// </summary>
     [Serializable]
-    public enum EUILayer
+    public enum E_UILayer
     {
         Scene,
         Touch,
@@ -18,7 +18,7 @@ namespace GFramework.UI
     }
 
     [Serializable]
-    public enum EUINode
+    public enum E_UINode
     {
         low,
         middle,
@@ -27,8 +27,8 @@ namespace GFramework.UI
 
     public static class UICanvas
     {
-        private static Dictionary<EUILayer, Dictionary<EUINode, Transform>> uiMap =
-            new Dictionary<EUILayer, Dictionary<EUINode, Transform>>();
+        private static Dictionary<E_UILayer, Dictionary<E_UINode, Transform>> uiMap =
+            new Dictionary<E_UILayer, Dictionary<E_UINode, Transform>>();
 
         public static void Setup()
         {
@@ -38,21 +38,21 @@ namespace GFramework.UI
             Canvas canvas = root.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = CameraMgr.Instance.uiCamera;
-            foreach (var layer in Enum.GetValues(typeof(EUILayer)))
+            foreach (var layer in Enum.GetValues(typeof(E_UILayer)))
             {
                 Transform layerGO = root.Find(layer.ToString());
-                Dictionary<EUINode, Transform> nodeMap = new Dictionary<EUINode, Transform>();
-                foreach (var node in Enum.GetValues(typeof(EUINode)))
+                Dictionary<E_UINode, Transform> nodeMap = new Dictionary<E_UINode, Transform>();
+                foreach (var node in Enum.GetValues(typeof(E_UINode)))
                 {
                     Transform nodeGO = layerGO.Find(node.ToString());
-                    nodeMap[(EUINode)node] = nodeGO;
+                    nodeMap[(E_UINode)node] = nodeGO;
                 }
-                uiMap[(EUILayer)layer] = nodeMap;
+                uiMap[(E_UILayer)layer] = nodeMap;
             }
             root.gameObject.layer = LayerMask.NameToLayer("UI");
         }
 
-        public static void SetParentOfUI(this Transform transform, EUILayer layer, EUINode node)
+        public static void SetParentOfUI(this Transform transform, E_UILayer layer, E_UINode node)
         {
             transform._SetParent(uiMap[layer][node], true);
             transform._RectTransform()?._MaxAnchors();

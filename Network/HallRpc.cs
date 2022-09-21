@@ -1,6 +1,4 @@
 ﻿using GProto;
-using System;
-using Google.Protobuf;
 
 namespace GFramework.Network
 {
@@ -12,10 +10,9 @@ namespace GFramework.Network
             this.channel = channel;
         }
 
-        public void Login(LoginReq req, Action<LoginResp> callback)
+        public void Login(LoginReq req, RpcResponse callback)
         {
-            Action<IMessage> action = callback as Action<IMessage>;
-            this.channel.dispatch.RegisterMsg(action);
+            this.channel.dispatch.RegisterMsg(callback);
             channel.Send(E_ProtoDefine.C2S_Login, req);
         }
     }
