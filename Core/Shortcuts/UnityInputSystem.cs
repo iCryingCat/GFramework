@@ -1,6 +1,7 @@
 using System;
-using System.Numerics;
+
 using UnityEngine;
+
 using static Shortcuts;
 
 namespace GFramework
@@ -17,7 +18,7 @@ namespace GFramework
         {
             KeyCode code = (KeyCode)Enum.Parse(typeof(KeyCode), keyName);
             return Input.GetKey(code);
-        } 
+        }
 
         public bool GetKeyUp(string keyName)
         {

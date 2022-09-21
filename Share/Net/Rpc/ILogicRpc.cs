@@ -1,3 +1,5 @@
+using System;
+
 using GProto;
 
 namespace GFramework.Network
@@ -5,7 +7,7 @@ namespace GFramework.Network
     // 逻辑服务器请求消息协议
     public interface IHall2Logic : ICaller
     {
-        void Login(LoginReq req, RpcResponse<LoginResp> callback);
+        void Login(LoginReq req, Action<LoginResp> callback);
     }
 
     // 逻辑服务器下发消息协议

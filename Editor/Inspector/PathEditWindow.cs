@@ -1,14 +1,7 @@
-﻿/*-------------------------------------------------------------------------
- * 作者：@白泽
- * 联系方式：xzjH5263@163.com
- * 创建时间：2022/6/28 22:41:41
- * 描述：
- *  -------------------------------------------------------------------------*/
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
+
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace GFramework
 {

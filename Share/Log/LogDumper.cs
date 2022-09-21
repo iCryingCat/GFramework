@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Linq;
 using System.Reflection;
 using System.Text;
+#if UNITY_STANDALONE_WIN
 using UnityEngine;
-
+#endif
 namespace GFramework.Log
 {
     public static class LogDumper

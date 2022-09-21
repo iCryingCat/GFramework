@@ -1,4 +1,4 @@
-﻿namespace GFramework
+﻿namespace GFramework.Core
 {
     /// <summary>
     /// 资源加载方式

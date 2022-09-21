@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 using GFramework;
+
 using UnityEditor;
+
 using UnityEngine;
-using UnityEngine.AI;
+
 using Object = UnityEngine.Object;
 
 [CustomEditor(typeof(UIBinder))]
@@ -58,7 +60,7 @@ public class Custom_UIBinder : Editor
                     menu.AddItem(new GUIContent(itemName),
                         defaultComponent.GetType() == option.GetType(), (obj) =>
                         {
-                            var pair = (KeyValuePair<int, Component>) obj;
+                            var pair = (KeyValuePair<int, Component>)obj;
                             this.varsArr.GetArrayElementAtIndex(pair.Key).FindPropertyRelative("component")
                                 .objectReferenceValue = pair.Value;
                             EditorUtility.SetDirty(this.target);

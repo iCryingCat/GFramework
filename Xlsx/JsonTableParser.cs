@@ -1,5 +1,6 @@
-﻿using GFramework;
-using System.IO;
+﻿using System.IO;
+
+using GFramework;
 
 public class JsonTableParser : IParser
 {

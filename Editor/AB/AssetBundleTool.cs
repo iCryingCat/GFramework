@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using System.IO;
 using System.Text;
-using System.IO;
+
+using UnityEditor;
+
+using UnityEngine;
 
 namespace GFramework
 {

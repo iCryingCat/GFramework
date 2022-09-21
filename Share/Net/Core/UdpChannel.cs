@@ -1,40 +1,33 @@
-﻿using Google.Protobuf;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using GFramework.Network;
 
-namespace GFramework.Net
+using Google.Protobuf;
+
+namespace GFramework.Network
 {
     /// <summary>
     /// UDP连接管理类
     /// 异步接收消息，存入消息对象
     /// 提供发送消息接口
     /// </summary>
-    public class UdpChannel : RpcChannel, IDisposable
+    public class UdpChannel : NetChannel, IDisposable
     {
         private UdpClient udpClient;
+        private IPEndPoint iPEndPoint;
 
-        public UdpChannel(ChannelConf conf, IProtoDecoder decoder) : base(conf, decoder)
+        public UdpChannel(IPEndPoint iPEndPoint, ProtoDispatcher dispatch) : base(dispatch)
         {
-            this.udpClient = new UdpClient(conf.ip, conf.port);
+            this.udpClient = new UdpClient(iPEndPoint);
         }
 
-        public override void Send(byte[] buffer)
+        public override void Send(E_ProtoDefine define, IMessage msg)
         {
-            this.udpClient.SendAsync(buffer, buffer.Length, this.remoteEndPoint);
+            this.udpClient.SendAsync(buffer, buffer.Length, iPEndPoint);
         }
 
-        public void Send(byte[] buffer, IPEndPoint remote)
-        {
-            this.udpClient.SendAsync(buffer, buffer.Length, remote);
-        }
-
-        public void BeginReceive()
+        public override void BeginReceive()
         {
             this.udpClient.BeginReceive(OnRecevied, buffer);
         }
@@ -46,9 +39,10 @@ namespace GFramework.Net
                 IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
                 byte[] data = this.udpClient.EndReceive(ar, ref remote);
                 buffer = buffer.Concat(data).ToArray();
-                receivedByteLen += data.Length;
-                GLog.P("UdpChannel", $"收到包长度：{receivedByteLen}");
-                this.UnPack(ref buffer);
+                receivedDataNum += data.Length;
+                GLog.P("UdpChannel", $"收到包长度：{receivedDataNum}");
+                this.dispatch.UnPack(buffer, receivedDataNum);
+                buffer = buffer.Skip(receivedDataNum).ToArray();
 
                 this.udpClient.BeginReceive(OnRecevied, buffer);
             }
@@ -60,7 +54,11 @@ namespace GFramework.Net
 
         public void Dispose()
         {
-
+            if (this.udpClient != null)
+            {
+                this.udpClient.Close();
+                this.udpClient.Dispose();
+            }
         }
     }
 }

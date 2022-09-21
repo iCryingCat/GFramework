@@ -1,8 +1,6 @@
-﻿using System;
+﻿using GFramework.Extern;
+
 using UnityEngine;
-using GFramework.UI;
-using GFramework;
-using GFramework.Extern;
 
 namespace GFramework.UI
 {

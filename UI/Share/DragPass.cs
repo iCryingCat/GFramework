@@ -1,12 +1,5 @@
-﻿/*-------------------------------------------------------------------------
- * 作者：@白泽
- * 联系方式：xzjH5263@163.com
- * 创建时间：2022/7/18 22:50:41
- * 描述：
- *  -------------------------------------------------------------------------*/
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using GFramework;
 
 namespace GFramework.UI
 {

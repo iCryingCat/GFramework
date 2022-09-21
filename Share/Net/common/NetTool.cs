@@ -61,7 +61,7 @@ namespace GFramework.Network
             IList HasUsedPort = PortIsUsed();
             int port = 0;
             bool IsRandomOk = true;
-            Random random = new Random((int) DateTime.Now.Ticks);
+            Random random = new Random((int)DateTime.Now.Ticks);
             while (IsRandomOk)
             {
                 port = random.Next(1024, 65535);
@@ -69,7 +69,5 @@ namespace GFramework.Network
             }
             return port;
         }
-        
-        
     }
 }

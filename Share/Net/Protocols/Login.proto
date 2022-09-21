@@ -9,6 +9,6 @@ message LoginReq{
 }
 
 message LoginResp{
-  int32 pid = 1;
-  GCode code = 2;
+  int32 pid = 4;
+  GCode code = 5;
 }

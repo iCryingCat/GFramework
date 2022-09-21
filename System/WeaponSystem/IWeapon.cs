@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// 武器基类
-/// </summary>
 public abstract class IWeapon
 {
     protected int id;
@@ -13,13 +8,9 @@ public abstract class IWeapon
     protected int atk = 0;
     protected float atkRange = 0.0f;
 
-    /// <summary>
-    /// 武器模型
-    /// </summary>
+
     protected GameObject prefGO;
-    /// <summary>
-    /// 武器持有者
-    /// </summary>
+
     protected ICharacter character;
 
     protected ParticleSystem particleSystem;

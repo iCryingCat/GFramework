@@ -1,5 +1,5 @@
-﻿using GFramework;
-using GFramework.Net;
+﻿using System.Net.Sockets;
+using GFramework;
 using Google.Protobuf;
 using System;
 using System.Collections;
@@ -9,8 +9,9 @@ using System.Net.NetworkInformation;
 using GFramework.Network;
 using UnityEngine;
 using Random = System.Random;
+using GProto;
 
-namespace GFramework
+namespace GFramework.Network
 {
     /// <summary>
     /// 网络管理器
@@ -24,18 +25,16 @@ namespace GFramework
 
         public void Setup()
         {
-            GenRpcServer();
+            TcpClientProxy proxy = new TcpClientProxy(new LogicDispatch());
+            proxy.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8888));
+            this.hallRpc = new HallRpc(proxy);
+
+            hallRpc.Login(new LoginReq() { UserName = "2447461103", Password = "123456" }, OnLoginResp);
         }
 
-        public void GenRpcServer()
+        private void OnLoginResp(LoginResp resp)
         {
-            ChannelConf define = new ChannelConf()
-            {
-                ip = "127.0.0.1",
-                port = 8888,
-                maxBufferSize = 2048,
-            };
-            hallRpc = new HallRpc(new TcpChannel(define, new LogicDecoder()));
+            GLog.P("NetAgent", resp.Code);
         }
     }
 }

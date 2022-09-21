@@ -1,8 +1,9 @@
-using GFramework;
 using System;
 using System.Collections;
-using UnityEngine;
 
+using GFramework;
+
+using UnityEngine;
 
 public class MonoLoop : DntdMonoSingleton<MonoLoop>
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum EProtoDefine
+public enum E_ProtoDefine
 {
     C2S_Login,
 }

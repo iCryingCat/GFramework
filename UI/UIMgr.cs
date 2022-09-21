@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+
 using GFramework;
-using System;
 using GFramework.UI;
+
+using UnityEngine;
 
 /// <summary>
 /// UI管理类

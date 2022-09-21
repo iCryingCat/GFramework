@@ -1,11 +1,8 @@
 ﻿#if XLua
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
-using XLua;
-using UnityEngine.SceneManagement;
 using System;
+using System.IO;
+
+using XLua;
 
 /// <summary>
 /// 热更流程

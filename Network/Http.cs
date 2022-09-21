@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine.Networking;
 using System.Collections;
-using GFramework;
-using GFramework.Network;
+using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.Networking;
 
 /// <summary>
 /// Http封装

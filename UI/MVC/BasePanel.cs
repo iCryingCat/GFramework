@@ -1,8 +1,6 @@
 ﻿using GFramework;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEngine.Events;
 
 public delegate void OnEventTrigger<T>(T arg);
 public delegate void OnEventTrigger<T1, T2>(T1 arg1, T2 arg2);

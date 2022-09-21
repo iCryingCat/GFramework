@@ -1,5 +1,4 @@
-﻿using System;
-using GFramework.Backpack;
+﻿using GFramework.Backpack;
 
 namespace GFramework
 {

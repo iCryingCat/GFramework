@@ -1,11 +1,8 @@
-using System.Xml;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GFramework.UI;
-using GFramework.Backpack;
+
 using GFramework;
+using GFramework.Backpack;
+using GFramework.UI;
 
 public class BackpackModel : BaseViewModel
 {

@@ -1,5 +1,5 @@
-﻿using GFramework;
-using GFramework.UI;
+﻿using GFramework.Network;
+
 using UnityEngine;
 
 public class GameInit : MonoBehaviour
@@ -10,10 +10,13 @@ public class GameInit : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(this);
-        // NetAgent.Instance.Setup();
+        NetAgent.Instance.Setup();
         // CameraMgr.Instance.Setup();
         // UICanvas.Setup();
-        string[] args = { "dda", "dasdasd" };
-        GLog.P("init", args);
+    }
+
+    private void OnDestroy()
+    {
+
     }
 }
