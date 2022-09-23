@@ -1,5 +1,4 @@
-﻿
-/// <summary>
+﻿/// <summary>
 /// 泛型单例
 /// </summary>
 /// <typeparam name="T"></typeparam>

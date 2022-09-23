@@ -54,19 +54,4 @@ public class MonoLoop : DntdMonoSingleton<MonoLoop>
     {
         onLateUpdate -= action;
     }
-
-    public new Coroutine StartCoroutine(IEnumerator routine)
-    {
-        return base.StartCoroutine(routine);
-    }
-
-    public new void StopCoroutine(IEnumerator routine)
-    {
-        base.StopCoroutine(routine);
-    }
-
-    public new void StopAllCoroutines()
-    {
-        base.StopAllCoroutines();
-    }
 }

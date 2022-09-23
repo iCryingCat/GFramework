@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
@@ -12,12 +13,12 @@ namespace GFramework.Network
     /// 异步接收消息，存入消息对象
     /// 提供发送消息接口
     /// </summary>
-    public class TcpClientProxy : NetChannel, IClientProxy, IDisposable
+    public class TcpClientProxy : AChannel, IClientProxy, IDisposable
     {
         private Socket socket;
 
-        public TcpClientProxy(ProtoDispatcher dispatch) : base(dispatch) { }
-        public TcpClientProxy(Socket socket, ProtoDispatcher dispatch) : base(dispatch)
+        public TcpClientProxy(ADispatcher dispatch) : base(dispatch) { }
+        public TcpClientProxy(Socket socket, ADispatcher dispatch) : base(dispatch)
         {
             this.socket = socket;
         }
@@ -25,7 +26,7 @@ namespace GFramework.Network
         // FIXME: 注册回调事件结构有待改善
         public void RegisterMsg(RpcResponse response)
         {
-            this.dispatch.RegisterMsg(response);
+            this.dispatcher.RegisterMsg(response);
         }
 
         // 连接到服务器
@@ -63,11 +64,11 @@ namespace GFramework.Network
             }
         }
 
-        public override void Send(E_ProtoDefine define, IMessage msg)
+        public override void Send(ProtoDefine define, byte[] msg)
         {
             if (this.socket.Connected)
             {
-                byte[] data = this.dispatch.Pack(define, msg);
+                byte[] data = this.packer.Pack(define, msg);
                 socket.BeginSend(data, 0, data.Length, SocketFlags.None, OnSended, data);
             }
             else
@@ -103,11 +104,16 @@ namespace GFramework.Network
         {
             try
             {
-                int size = socket.EndReceive(ar);
-                GLog.P("TcpChannel", $"收到数据长度：{size}");
-                this.dispatch.UnPack(buffer, size);
+                int bufferSize = socket.EndReceive(ar);
+                IPEndPoint remote = (IPEndPoint)socket.RemoteEndPoint;
+                GLog.P("TcpChannel", $"收到--{remote}--的消息，数据长度：{bufferSize}");
 
-                socket.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+                List<Tuple<ProtoDefine, byte[]>> protos = this.packer.UnPack(ref buffer, ref bufferSize);
+                for (int i = 0; i < protos.Count; ++i)
+                {
+                    this.dispatcher.DecodeForm(protos[i].Item1, protos[i].Item2);
+                }
+                socket.BeginReceive(buffer, bufferSize, maxBufferSize, SocketFlags.None, OnReceived, buffer);
             }
             catch (Exception ex)
             {

@@ -8,7 +8,7 @@ using Google.Protobuf;
 
 namespace GFramework.Network
 {
-    public class TcpServerProxy<T> : NetChannel, IServerProxy, IDisposable where T : ProtoDispatcher, new()
+    public class TcpServerProxy<T> : AChannel, IServerProxy, IDisposable where T : ADispatcher, new()
     {
         private Socket socket;
         private Dictionary<IPEndPoint, TcpClientProxy> clientProxyMap = new Dictionary<IPEndPoint, TcpClientProxy>();
@@ -43,13 +43,13 @@ namespace GFramework.Network
             }
         }
 
-        public void SendToSingle(IPEndPoint iPEndPoint, E_ProtoDefine define, IMessage msg)
+        public void SendToSingle(IPEndPoint iPEndPoint, ProtoDefine define, byte[] msg)
         {
             if (!clientProxyMap.ContainsKey(iPEndPoint)) return;
             clientProxyMap[iPEndPoint].Send(define, msg);
         }
 
-        public override void Send(E_ProtoDefine define, IMessage msg)
+        public override void Send(ProtoDefine define, byte[] msg)
         {
             TcpClientProxy[] allProxys = clientProxyMap.Values.ToArray();
             for (int i = 0; i < allProxys.Length; i++)
@@ -72,11 +72,15 @@ namespace GFramework.Network
         {
             try
             {
-                int size = socket.EndReceive(ar);
-                GLog.P("TcpChannel", $"收到数据长度：{size}");
-                this.dispatch.UnPack(buffer, size);
+                int bufferSize = socket.EndReceive(ar);
+                GLog.P("TcpChannel", $"收到数据长度：{bufferSize}");
 
-                socket.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+                List<Tuple<ProtoDefine, byte[]>> protos = this.packer.UnPack(ref buffer, ref bufferSize);
+                for (int i = 0; i < protos.Count; ++i)
+                {
+                    this.dispatcher.DecodeForm(protos[i].Item1, protos[i].Item2);
+                }
+                socket.BeginReceive(buffer, bufferSize, maxBufferSize, SocketFlags.None, OnReceived, buffer);
             }
             catch (Exception ex)
             {

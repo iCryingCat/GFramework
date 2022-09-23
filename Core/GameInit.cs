@@ -10,7 +10,6 @@ public class GameInit : MonoBehaviour
     void Awake()
     {
         DontDestroyOnLoad(this);
-        NetAgent.Instance.Setup();
-        LuaManager.Instance.Setup();
+        RpcAgent.Instance.Setup();
     }
 }
