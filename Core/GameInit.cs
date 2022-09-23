@@ -11,5 +11,6 @@ public class GameInit : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         RpcAgent.Instance.Setup();
+        TickAgent.Instance.Setup();
     }
 }
