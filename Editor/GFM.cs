@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 
 using GFramework.Core;
+
 using UnityEditor;
+
 using UnityEngine;
 
-namespace GFramework
+namespace GFramework.EditorExtern
 {
     public class WorkFolder
     {

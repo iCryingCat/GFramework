@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Collections.Generic;
 using GFramework.UI;
@@ -7,6 +8,7 @@ namespace GFramework.UI
 {
     public class UIBinder : MonoBehaviour
     {
+        [HideInInspector] public string targetViewPath = null;
         public E_UILayer layer;
         public E_UINode node;
         [HideInInspector] public List<UIVar> varsArr = new List<UIVar>();

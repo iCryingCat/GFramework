@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Text;
 
+using GFramework.Util;
+
 using UnityEditor;
 
 using UnityEngine;
-using GFramework.Util;
 
-namespace GFramework
+namespace GFramework.EditorExtern
 {
     /// <summary>
     /// 打包AB工具类

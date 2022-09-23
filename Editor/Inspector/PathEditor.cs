@@ -3,7 +3,7 @@ using UnityEditor.SceneManagement;
 
 using UnityEngine;
 
-namespace GFramework
+namespace GFramework.EditorExtern
 {
     /// <summary>
     /// 配置窗口

@@ -1,6 +1,4 @@
-﻿using GFramework.Extern;
-
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GFramework.UI
 {
@@ -109,8 +107,8 @@ namespace GFramework.UI
             this.OnLoaded();
         }
 
-        public abstract string BindingPath();
-        protected abstract void BindVars();
+        public virtual string BindingPath() { return string.Empty; }
+        protected virtual void BindVars() { }
         protected virtual void BindEvents() { }
         protected virtual void OnLoaded() { }
         protected virtual void OnShow() { }

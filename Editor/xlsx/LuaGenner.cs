@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace gframework
+namespace GFramework
 {
     public class LuaGenner
     {

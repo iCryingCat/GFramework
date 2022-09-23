@@ -1,14 +1,14 @@
 ﻿using System.IO;
-using UnityEditor;
+
 using UnityEngine;
 
-namespace GFramework
+namespace GFramework.EditorExtern
 {
     public class LuaToTxt
     {
         private static FileSystemWatcher luaWatcher;
         private const string luaPath = "/GameLogic/Lua";
-        
+
         static LuaToTxt()
         {
             if (luaWatcher == null)

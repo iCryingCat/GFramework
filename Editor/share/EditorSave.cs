@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace GFramework
+namespace GFramework.EditorExtern
 {
     public class EditorSave
     {

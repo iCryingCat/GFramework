@@ -13,12 +13,12 @@ namespace GFramework.Network
     /// 异步接收消息，存入消息对象
     /// 提供发送消息接口
     /// </summary>
-    public class UdpProxy : AChannel, IDisposable
+    public class UdpClientProxy : AChannel, IDisposable
     {
         private UdpClient udpClient;
         private IPEndPoint iPEndPoint;
 
-        public UdpProxy(IPEndPoint iPEndPoint, ADispatcher dispatch) : base(dispatch)
+        public UdpClientProxy(IPEndPoint iPEndPoint, ADispatcher dispatch) : base(dispatch)
         {
             this.udpClient = new UdpClient(iPEndPoint);
         }

@@ -17,7 +17,8 @@ namespace GFramework.Network
 
         public void Setup()
         {
-            tickService = new TickService(new UdpProxy(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8999), new TickDispatcher()));
+            IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8999);
+            tickService = new TickService(new UdpClientProxy(iPEndPoint, new TickDispatcher()));
             MonoLoop.Instance.StartCoroutine(OnTick());
         }
 
