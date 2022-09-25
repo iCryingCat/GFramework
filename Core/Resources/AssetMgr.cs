@@ -10,7 +10,7 @@ namespace GFramework
     {
         private static string LoadPath(string path)
         {
-            return Path.Combine(new string[] { "Assets", path });
+            return Path.Combine("Assets", path);
         }
 
         public static T Load<T>(string path) where T : UnityEngine.Object

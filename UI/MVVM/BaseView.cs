@@ -17,13 +17,13 @@ namespace GFramework.UI
         protected Transform transform;
 
         // mono组件
-        protected UIBinder uiBinder;
+        protected UIContainer uiContainer;
 
         // 是否已经初始化
         protected bool isInitialized = false;
 
         // 属性绑定器
-        protected readonly PropertyBinder<T> modelBinder = new PropertyBinder<T>();
+        protected readonly PropertyBinder<T> propertyBinder = new PropertyBinder<T>();
 
         public bool Hided { get; private set; }
         public bool Disposed { get; private set; }
@@ -46,8 +46,8 @@ namespace GFramework.UI
 
         private void OnContextChanged(T old, T value)
         {
-            modelBinder.Unbind(old);
-            modelBinder.Bind(value);
+            propertyBinder.Unbind(old);
+            propertyBinder.Bind(value);
         }
 
         private void Initialize()
@@ -88,15 +88,15 @@ namespace GFramework.UI
 
         protected T GetVar<T>(int index) where T : Component
         {
-            return uiBinder.GetVar<T>(index);
+            return uiContainer.GetVar<T>(index);
         }
 
         public void BindGO(GameObject go)
         {
             this.gameObject = go;
             this.transform = go.transform;
-            this.uiBinder = go.GetComponent<UIBinder>();
-            this.transform.SetParentOfUI(this.uiBinder.layer, this.uiBinder.node);
+            this.uiContainer = go.GetComponent<UIContainer>();
+            this.transform.SetParentOfUI(this.uiContainer.layer, this.uiContainer.node);
             Load();
         }
 
@@ -107,7 +107,7 @@ namespace GFramework.UI
             this.OnLoaded();
         }
 
-        public virtual string BindingPath() { return string.Empty; }
+        public abstract string BindingPath();
         protected virtual void BindVars() { }
         protected virtual void BindEvents() { }
         protected virtual void OnLoaded() { }

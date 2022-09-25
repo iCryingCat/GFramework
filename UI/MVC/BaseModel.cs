@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Game.Assets.GFramework.UI.MVC
+namespace GFramework.UI
 {
     public class BaseModel
     {
-        
+
     }
 }

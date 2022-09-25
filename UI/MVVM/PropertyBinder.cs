@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-using GFramework.UI;
-
-namespace GFramework
+namespace GFramework.UI
 {
     /// </summary>
     public class PropertyBinder<T> where T : BaseViewModel

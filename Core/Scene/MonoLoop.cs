@@ -54,4 +54,9 @@ public class MonoLoop : DntdMonoSingleton<MonoLoop>
     {
         onLateUpdate -= action;
     }
+
+    public void Instantiate(string name)
+    {
+        new GameObject(name);
+    }
 }

@@ -10,36 +10,27 @@ namespace GFramework
     /// </summary>
     public class ResMgr
     {
-        /// <summary>
-        /// 加载资源
-        /// </summary>
-        /// <param name="bundleName"></param>
-        /// <param name="assetName"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        static GLogger logger = new GLogger("ResMgr");
+
+        // 加载资源
         private static T Load<T>(string bundleName, string assetName) where T : UnityEngine.Object
         {
 #if UNITY_EDITOR
             if (Solution.loadMode == ResLoadMode.Local)
             {
-                string path = Path.Combine(bundleName, assetName);
-                GLog.P("ResMgr", $"load resource with local mode at path : {path}");
+                string path = Path.Combine(bundleName, assetName).PathFormat();
+                logger.P($"使用本地模式加载: {path}");
                 return AssetMgr.Load<T>(path);
             }
 #endif
             return BundleMgr.Load<T>(bundleName, assetName);
         }
 
-        /// <summary>
-        /// 加载UI预制体
-        /// </summary>
-        /// <param name="name"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        // 加载UI预制体
         public static T LoadUI<T>(string name) where T : UnityEngine.Object
         {
             string assetName = name.GetLastFileName();
-            string bundleName = Path.Combine(ResConf.UI, name.GetLastFileName());
+            string bundleName = Path.Combine(ResSetting.UI, name.Substring(0, name.Length - name.GetLastFileName().Length));
             return Load<T>(bundleName, assetName);
         }
 

@@ -15,6 +15,8 @@ namespace GFramework
     /// </summary>
     public class SceneMgr : DntdMonoSingleton<SceneMgr>
     {
+        GLogger logger = new GLogger("SceneMgr");
+
         private static SceneID last;
         private static SceneID next;
 
@@ -26,12 +28,12 @@ namespace GFramework
         {
             if (SceneManager.GetSceneByName(last.ToString()) == null || SceneManager.GetSceneByName(next.ToString()) == null)
             {
-                GLog.E("SceneMgr", $"请检查场景ID{last} 或 {next} 是否正确");
+                logger.E($"请检查场景ID{last} 或 {next} 是否正确");
                 return;
             }
             SceneMgr.last = last;
             SceneMgr.next = next;
-            GameApp.Instance.StartCoroutine(AsyncLoading());
+            MonoLoop.Instance.StartCoroutine(AsyncLoading());
         }
 
         private float toProgress = 0;

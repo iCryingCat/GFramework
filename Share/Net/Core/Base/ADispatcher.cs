@@ -8,8 +8,8 @@ namespace GFramework.Network
 {
     public abstract class ADispatcher
     {
-        public AChannel channel;
+        public AChannel channel = null;
         public abstract void DecodeForm(ProtoDefine define, byte[] data);
-        public abstract void RegisterMsg(RpcResponse response);
+        public abstract void RegisterMsg(RpcCallBack response);
     }
 }

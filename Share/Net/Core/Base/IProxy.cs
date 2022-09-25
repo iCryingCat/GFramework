@@ -1,7 +1,5 @@
 ﻿using System.Net;
 
-using Google.Protobuf;
-
 namespace GFramework.Network
 {
     public interface IServerProxy
@@ -13,6 +11,6 @@ namespace GFramework.Network
     public interface IClientProxy
     {
         void Connect(IPEndPoint iPEndPoint);
-        void RegisterMsg(RpcResponse response);
+        void RegisterMsg(RpcCallBack response);
     }
 }

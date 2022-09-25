@@ -1,6 +1,6 @@
 using ILRuntime.Runtime.Enviorment;
 
-namespace ILGame.Assets.GFramework.IL
+namespace GFramework.IL
 {
     public class ILManager : Singleton<ILManager>
     {

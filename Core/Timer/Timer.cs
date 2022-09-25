@@ -12,7 +12,7 @@ namespace GFramework
     {
         public Timer(float duration, Action callback)
         {
-            GameApp.Instance.StartCoroutine(Timing(duration, callback));
+            MonoLoop.Instance.StartCoroutine(Timing(duration, callback));
         }
 
         IEnumerator Timing(float duration, Action callback)

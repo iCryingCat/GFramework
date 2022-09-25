@@ -2,11 +2,11 @@
 
 namespace GFramework.UI
 {
-    public class BaseViewModel : IDisposable
+    public class BaseViewModel
     {
         public IView bindingView;
 
-        public virtual void Init()
+        public virtual void Init(BaseData data)
         {
 
         }

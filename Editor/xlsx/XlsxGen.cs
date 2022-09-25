@@ -5,10 +5,6 @@ using System.IO;
 
 using Excel;
 
-using GFramework;
-
-using GFramework;
-
 using UnityEditor;
 
 using UnityEngine;
@@ -17,6 +13,8 @@ namespace GFramework.EditorExtern
 {
     public class XlsxParser : Editor
     {
+        static GLogger logger = new GLogger("XlsxParser");
+
         private static Conf conf = new Conf()
         {
             sourcePath = PlayerPrefs.GetString(EditorSave.CONFIG_TABLE_PATH),
@@ -58,7 +56,7 @@ namespace GFramework.EditorExtern
 
         private static void ReadXlsx(string file)
         {
-            GLog.P("XlsxGen", $"read {file}");
+            logger.P($"read {file}");
             using (FileStream fs = new FileStream(file, FileMode.Open))
             {
                 IExcelDataReader excelDataReader = ExcelReaderFactory.CreateOpenXmlReader(fs);
@@ -85,7 +83,7 @@ namespace GFramework.EditorExtern
             // 2: 注释|字段类型|字段名称
             string tableName = sheet.TableName;
             string genTargetPath = Path.Combine(conf.genPath, tableName + ".cs");
-            GLog.P("XlsxGen", $"gen cs {genTargetPath}");
+            logger.P($"gen cs {genTargetPath}");
             CSClassGenner classGenner = new CSClassGenner(tableName);
             using (FileStream fs = new FileStream(genTargetPath, FileMode.Create))
             {
@@ -123,7 +121,7 @@ namespace GFramework.EditorExtern
             // 4: 字段名称
             string tableName = sheet.TableName;
             string genTargetPath = Path.Combine(conf.genPath, tableName + ".lua");
-            GLog.P("XlsxGen", $"gen lua {genTargetPath}");
+            logger.P($"gen lua {genTargetPath}");
             LuaGenner luaGenner = new LuaGenner(tableName);
             using (FileStream fs = new FileStream(genTargetPath, FileMode.Create))
             {

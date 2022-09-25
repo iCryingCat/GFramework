@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 /// <typeparam name="T"></typeparam>
 public class BindableProperty<T>
 {
-    public delegate void OnValueChangeHandler(T old, T value);
+    public delegate void OnValueChangeHandler(T oldValue, T newValue);
 
     public OnValueChangeHandler OnValueChanged;
 
