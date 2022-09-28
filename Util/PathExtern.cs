@@ -16,7 +16,7 @@ namespace GFramework.Util
         }
 
         // 获取路径前缀
-        public static string GetFirstFileName(this string path, char mark = '/')
+        public static string GetFirstFieldName(this string path, char mark = '/')
         {
             if (string.IsNullOrEmpty(path)) return path;
             int index = path.IndexOf(mark);
@@ -25,7 +25,7 @@ namespace GFramework.Util
         }
 
         // 获取路径后缀文件名
-        public static string GetLastFileName(this string path, char mark = '/')
+        public static string GetLastFieldName(this string path, char mark = '/')
         {
             if (string.IsNullOrEmpty(path)) return path;
             int index = path.LastIndexOf(mark);
@@ -34,7 +34,7 @@ namespace GFramework.Util
         }
 
         // 获取路径后缀文件名，不含文件格式
-        public static string GetLastFileNameWithoutSuffix(this string path, char mark = '/')
+        public static string GetLastFieldNameWithoutSuffix(this string path, char mark = '/')
         {
             if (string.IsNullOrEmpty(path)) return path;
             int index = path.LastIndexOf(mark);

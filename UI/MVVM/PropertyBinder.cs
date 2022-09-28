@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UnityEngine;
 
 namespace GFramework.UI
 {
-    /// </summary>
     public class PropertyBinder<T> where T : BaseViewModel
     {
         private delegate void BindHandler(T viewModel);
@@ -24,25 +24,24 @@ namespace GFramework.UI
             }
 
             // 添加绑定方法
-            _binders.Add(viewModel =>
+            _binders.Add((viewModel) =>
             {
                 GetPropertyValue<TProperty>(name, viewModel, fieldInfo).OnValueChanged += valueChangeHandler;
             });
 
-            _unbinders.Add(viewModel =>
+            _unbinders.Add((viewModel) =>
             {
                 GetPropertyValue<TProperty>(name, viewModel, fieldInfo).OnValueChanged -= valueChangeHandler;
             });
         }
 
-        /// <returns></returns>
         private BindableProperty<TProperty> GetPropertyValue<TProperty>(string name, T viewModel, FieldInfo fieldInfo)
         {
             // value即是要获得的可绑定属性
             var value = fieldInfo.GetValue(viewModel);
 
             BindableProperty<TProperty> bindableProperty = value as BindableProperty<TProperty>;
-
+            Debug.Log("121212");
             // 如果没有目标属性,抛出异常
             if (bindableProperty == null)
             {

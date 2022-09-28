@@ -13,7 +13,7 @@ public class BindableProperty<T>
 {
     public delegate void OnValueChangeHandler(T oldValue, T newValue);
 
-    public OnValueChangeHandler OnValueChanged;
+    public event OnValueChangeHandler OnValueChanged;
 
     T _value;
     public T Value
@@ -25,7 +25,8 @@ public class BindableProperty<T>
                 return;
             T oldValue = _value;
             _value = value;
-            OnValueChanged?.Invoke(oldValue, _value);
+            if (OnValueChanged != null)
+                OnValueChanged(oldValue, _value);
         }
     }
 }

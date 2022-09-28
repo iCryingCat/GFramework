@@ -13,6 +13,8 @@ namespace GFramework
             this.uiCamera = uiCam.GetComponent<Camera>();
             this.uiCamera.cullingMask = LayerMask.GetMask("UI");
             this.uiCamera.orthographic = true;
+            this.uiCamera.clearFlags = CameraClearFlags.Color;
+            this.uiCamera.backgroundColor = Color.black;
         }
     }
 }

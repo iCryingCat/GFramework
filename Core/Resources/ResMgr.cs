@@ -29,8 +29,8 @@ namespace GFramework
         // 加载UI预制体
         public static T LoadUI<T>(string name) where T : UnityEngine.Object
         {
-            string assetName = name.GetLastFileName();
-            string bundleName = Path.Combine(ResSetting.UI, name.Substring(0, name.Length - name.GetLastFileName().Length));
+            string assetName = name.GetLastFieldName();
+            string bundleName = Path.Combine(ResSetting.UI, name.Substring(0, name.Length - name.GetLastFieldName().Length));
             return Load<T>(bundleName, assetName);
         }
 

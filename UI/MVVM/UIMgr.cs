@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 
 using GFramework;
+using GFramework.Extern;
 using GFramework.UI;
 
 using UnityEngine;
-#if XLua
-using XLua;
-#endif
 
 /// <summary>
 /// UI管理类
@@ -42,19 +40,40 @@ public class UIMgr
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T1 New<T1, T2>(BaseData data = null, BaseView<BaseViewModel> parent = null) where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
+    public static T1 NewUI<T1, T2>() where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
     {
         T1 view = new T1();
-        view.parent = parent;
-        string name = view.BindingPath();
-        GameObject uiPref = ResMgr.LoadUI<GameObject>(name);
+        T2 viewModel = new T2();
+        view.BindProperty();
+        view.BindingContext = viewModel;
+        viewModel.bindingView = view;
+
+        Type type = typeof(T1);
+        object[] attrs = (UIViewAttr[])type.GetCustomAttributes(typeof(UIViewAttr), false);
+        UIViewAttr viewAttr = attrs.Length > 0 ? attrs[0] as UIViewAttr : null;
+        if (viewAttr != null)
+        {
+            if (viewAttr.isSingleton) singleViewMap[type] = view;
+        }
+        return view;
+    }
+
+    private static void LoadUI<T1, T2>(T1 view) where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
+    {
+        string prefabPath = view.BindingPath();
+        GameObject uiPref = ResMgr.LoadUI<GameObject>(prefabPath);
         GameObject uiGO = ResMgr.Instantiate(uiPref);
         Debug.Assert(uiGO);
         view.BindGO(uiGO);
-        T2 viewModel = new T2();
-        viewModel.bindingView = view;
-        view.BindingContext = viewModel;
-        if (data != null) viewModel.Init(data);
+    }
+
+    public static T1 Instantiate<T1, T2>(GameObject temp, Transform parent = null) where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
+    {
+        T1 view = NewUI<T1, T2>();
+        GameObject tempGO = ResMgr.Instantiate(temp);
+        view.BindGO(tempGO);
+        if (parent != null)
+            view.transform.SetParent(parent);
         return view;
     }
 
@@ -64,18 +83,17 @@ public class UIMgr
     /// <typeparam name="T1"></typeparam>
     /// <typeparam name="T2"></typeparam>
     /// <returns></returns>
-    public static T1 Show<T1, T2>(BaseData data = null, BaseView<BaseViewModel> parent = null) where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
+    public static T1 ShowUI<T1, T2>() where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
     {
         Type type = typeof(T1);
-        if (singleViewMap.ContainsKey(type))
+        T1 view = null;
+        if (singleViewMap.ContainsKey(type)) view = (T1)singleViewMap[type];
+        if (view == null)
         {
-            T1 view = (T1)singleViewMap[type];
-            view.parent = parent;
-            view.Show();
-            return view;
+            view = NewUI<T1, T2>();
+            LoadUI<T1, T2>(view);
         }
-        T1 t = New<T1, T2>(parent: parent);
-        t.Show();
-        return t;
+        view.Show();
+        return view;
     }
 }

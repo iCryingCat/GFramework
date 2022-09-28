@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using GFramework.Util;
 
@@ -18,21 +19,38 @@ namespace GFramework.EditorExtern
     {
         static GLogger logger = new GLogger("UIBinder");
 
-
-        private UI.UIContainer binder;
+        private UI.UIContainer container;
+        private SerializedProperty bindingViewPath;
+        private SerializedProperty bindingViewType;
+        private SerializedProperty bindingViewModelType;
         private SerializedProperty varsArr;
         private const string prefixPath = "Assets/Res/Prefabs/UI/";
 
         private void OnEnable()
         {
-            this.binder = this.target as UI.UIContainer;
+            this.container = this.target as UI.UIContainer;
+            this.bindingViewPath = this.serializedObject.FindProperty("bindingViewPath");
+            this.bindingViewType = this.serializedObject.FindProperty("bindingViewType");
+            this.bindingViewModelType = this.serializedObject.FindProperty("bindingViewModelType");
             this.varsArr = this.serializedObject.FindProperty("varsArr");
         }
 
         private void UpdateTargetView()
         {
             string path = EditorUtility.OpenFilePanel("选择目标View.cs文件", Application.dataPath, "cs");
-            this.binder.targetViewPath = path;
+            this.bindingViewPath.stringValue = path;
+            string text = File.ReadAllText(path);
+            string matchModel = @"class\s+([a-z A-Z]+)\s+:\s+BaseView<([a-z A-Z]+)>";
+            Match match = Regex.Match(text, matchModel);
+            if (!match.Success) logger.E("匹配类名失败！！！");
+            string viewName = match.Groups[1].Value;
+            string modelName = match.Groups[2].Value;
+            this.bindingViewType.stringValue = viewName;
+            this.bindingViewModelType.stringValue = modelName;
+            logger.P($"{viewName} {modelName}");
+            EditorUtility.SetDirty(this.target);
+            this.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+            this.serializedObject.UpdateIfRequiredOrScript();
         }
 
         private void UpdateViewCode()
@@ -54,7 +72,7 @@ namespace GFramework.EditorExtern
             }
 
             // PrefabMode中的GameObject既不是Instance也不是Asset
-            var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(this.binder.gameObject);
+            var prefabStage = UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetPrefabStage(this.container.gameObject);
             if (prefabStage != null)
             {
                 // 预制体资源：prefabAsset = prefabStage.prefabContentsRoot
@@ -68,7 +86,7 @@ namespace GFramework.EditorExtern
             }
 
             string prefabPath = assetPath.Substring(prefixPath.Length);
-            string[] lines = File.ReadAllLines(this.binder.targetViewPath);
+            string[] lines = File.ReadAllLines(this.container.bindingViewPath);
             StringBuilder sb = new StringBuilder();
             bool flag = true;
             for (int i = 0; i < lines.Length; ++i)
@@ -87,35 +105,35 @@ namespace GFramework.EditorExtern
                     sb.AppendLine($"        return \"{prefabPath}\";");
                     sb.AppendLine($"    }}");
 
-                    List<Tuple<string, string>> fieldTuples = new List<Tuple<string, string>>();
+                    StringBuilder fieldsSB = new StringBuilder();
+                    StringBuilder varsSB = new StringBuilder();
+                    varsSB.AppendLine($"    protected override void BindVars() {{");
                     for (int j = 0; j < this.varsArr.arraySize; ++j)
                     {
                         SerializedProperty fieldNameProperty = this.varsArr.GetArrayElementAtIndex(j).FindPropertyRelative("fieldName");
                         SerializedProperty componentProperty = this.varsArr.GetArrayElementAtIndex(j).FindPropertyRelative("component");
-                        string fieldName = fieldNameProperty.stringValue;
                         Component component = componentProperty.objectReferenceValue as Component;
-                        string componentName = component.GetType().ToString().GetLastFileNameWithoutSuffix('.');
-                        fieldTuples.Add(new Tuple<string, string>(fieldName, componentName));
-                    }
+                        string fieldType = component.GetType().ToString().GetLastFieldNameWithoutSuffix('.');
+                        string fieldName = fieldNameProperty.stringValue;
 
-                    for (int j = 0; j < fieldTuples.Count; ++j)
-                    {
-                        string fieldName = fieldTuples[j].Item1;
-                        string fieldType = fieldTuples[j].Item2;
-                        sb.AppendLine($"    private {fieldType} {fieldName};");
+                        UI.UIContainer uiContainer = component as UI.UIContainer;
+                        if (uiContainer != null)
+                        {
+                            fieldsSB.AppendLine($"    private {uiContainer.bindingViewType} {fieldName};");
+                            varsSB.AppendLine($"        {fieldName} = this.GetVar<{uiContainer.bindingViewType},{uiContainer.bindingViewModelType}>({j});");
+                        }
+                        else
+                        {
+                            fieldsSB.AppendLine($"    private {fieldType} {fieldName};");
+                            varsSB.AppendLine($"        {fieldName} = this.GetVar<{fieldType}>({j});");
+                        }
                     }
-
-                    sb.AppendLine($"    protected override void BindVars() {{");
-                    for (int j = 0; j < fieldTuples.Count; ++j)
-                    {
-                        string fieldName = fieldTuples[j].Item1;
-                        string fieldType = fieldTuples[j].Item2;
-                        sb.AppendLine($"        {fieldName} = this.GetVar<{fieldType}>({j});");
-                    }
-                    sb.AppendLine($"    }}");
+                    varsSB.AppendLine($"    }}");
+                    sb.Append(fieldsSB);
+                    sb.Append(varsSB);
                 }
             }
-            File.WriteAllText(this.binder.targetViewPath, sb.ToString());
+            File.WriteAllText(this.container.bindingViewPath, sb.ToString());
             AssetDatabase.Refresh();
         }
 
@@ -133,10 +151,11 @@ namespace GFramework.EditorExtern
 
             if (updateCode)
             {
-                if (string.IsNullOrEmpty(this.binder.targetViewPath) || !File.Exists(this.binder.targetViewPath)) this.UpdateTargetView();
+                if (string.IsNullOrEmpty(this.container.bindingViewPath) || !File.Exists(this.container.bindingViewPath)) this.UpdateTargetView();
                 this.UpdateViewCode();
             }
-            EditorGUILayout.LabelField(this.binder.targetViewPath.Substring(Application.dataPath.Length));
+            string targetViewPath = string.IsNullOrEmpty(this.container.bindingViewPath) ? "未绑定目标view!!!" : this.container.bindingViewPath.Substring(Application.dataPath.Length);
+            EditorGUILayout.LabelField(targetViewPath);
             base.OnInspectorGUI();
             EditorGUILayout.LabelField("----------Vars----------");
             EditorGUILayout.BeginVertical();
@@ -146,11 +165,16 @@ namespace GFramework.EditorExtern
                 SerializedProperty fieldName = this.varsArr.GetArrayElementAtIndex(i).FindPropertyRelative("fieldName");
                 SerializedProperty gameObject = this.varsArr.GetArrayElementAtIndex(i).FindPropertyRelative("gameObject");
                 SerializedProperty component = this.varsArr.GetArrayElementAtIndex(i).FindPropertyRelative("component");
+                GameObject go = gameObject.objectReferenceValue as GameObject;
+                Component selectedComp = component.objectReferenceValue as Component;
 
                 EditorGUILayout.BeginHorizontal();
                 // 引用对象
-                EditorGUILayout.PropertyField(gameObject, new GUIContent(), GUILayout.MaxWidth(100));
-
+                bool focus = GUILayout.Button(new GUIContent($"{i}.{go.name.Trim('#')}"), GUILayout.Width(100));
+                if (focus)
+                {
+                    EditorGUIUtility.PingObject(go);
+                }
                 string newFieldName = EditorGUILayout.TextField(fieldName.stringValue, GUILayout.MaxWidth(100));
                 if (newFieldName != fieldName.stringValue)
                 {
@@ -161,29 +185,24 @@ namespace GFramework.EditorExtern
                 }
 
                 // 组件选项
-                GameObject go = gameObject.objectReferenceValue as GameObject;
-                Component defaultComponent = component.objectReferenceValue as Component;
-                string defaultName = defaultComponent.GetType().ToString().GetLastFileNameWithoutSuffix('.');
-                if (EditorGUILayout.DropdownButton(new GUIContent(defaultName), FocusType.Passive))
+                List<string> componentOptions = new List<string>();
+                int selectedIndex = 0;
+                Component[] comps = go.GetComponents<Component>();
+                for (int j = 0; j < comps.Length; ++j)
                 {
-                    GenericMenu menu = new GenericMenu();
-                    Component[] comps = go.GetComponents<Component>();
-                    for (int j = 0; j < comps.Length; ++j)
-                    {
-                        Component option = comps[j];
-                        string itemName = option.GetType().ToString().GetLastFileNameWithoutSuffix('.');
-                        menu.AddItem(new GUIContent(itemName),
-                            defaultComponent.GetType() == option.GetType(), (obj) =>
-                            {
-                                var pair = (KeyValuePair<int, Component>)obj;
-                                this.varsArr.GetArrayElementAtIndex(pair.Key).FindPropertyRelative("component")
-                                    .objectReferenceValue = pair.Value;
-                                EditorUtility.SetDirty(this.target);
-                                this.serializedObject.ApplyModifiedPropertiesWithoutUndo();
-                                this.serializedObject.UpdateIfRequiredOrScript();
-                            }, new KeyValuePair<int, Component>(i, option));
-                    }
-                    menu.ShowAsContext();
+                    Component comp = comps[j];
+                    if (comp == selectedComp) selectedIndex = j;
+                    string compName = comp.GetType().ToString().GetLastFieldNameWithoutSuffix('.');
+                    componentOptions.Add($"{j}.{compName}");
+                }
+                int optionIndex = EditorGUILayout.Popup(selectedIndex, componentOptions.ToArray());
+                if (optionIndex != selectedIndex)
+                {
+                    this.varsArr.GetArrayElementAtIndex(i).FindPropertyRelative("component")
+                        .objectReferenceValue = comps[optionIndex];
+                    EditorUtility.SetDirty(this.target);
+                    this.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+                    this.serializedObject.UpdateIfRequiredOrScript();
                 }
 
                 // 删除引用

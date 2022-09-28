@@ -7,23 +7,18 @@ namespace GFramework.UI
 {
     public class UIContainer : MonoBehaviour
     {
-        [HideInInspector] public string targetViewPath = null;
-        public E_UILayer layer;
-        public E_UINode node;
+        public UILayer layer;
+        public UINode node;
+        [HideInInspector] public string bindingViewPath = null;
+        [HideInInspector] public string bindingViewType = null;
+        [HideInInspector] public string bindingViewModelType = null;
         [HideInInspector] public List<UIVar> varsArr = new List<UIVar>();
 
-        public GameObject GetGO(int index)
+        public UIVar GetVar(int index)
         {
             if (index >= this.varsArr.Count)
                 return null;
-            return this.varsArr[index].gameObject;
-        }
-
-        public T GetVar<T>(int index) where T : Component
-        {
-            if (index >= this.varsArr.Count)
-                return null;
-            return this.varsArr[index].component as T;
+            return this.varsArr[index];
         }
     }
 

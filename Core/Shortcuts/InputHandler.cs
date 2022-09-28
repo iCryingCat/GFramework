@@ -1,22 +1,16 @@
 using System;
+
 using UnityEngine;
 
-public class InputHandler
+namespace GFramework
 {
-    public static float Forward { get => Input.GetAxis(Shortcuts.VERTICAL); }
-    public static float Right { get => Input.GetAxis(Shortcuts.HORIZONTAL); }
-    public static float MouseX { get => Input.GetAxis((Shortcuts.MOUSE_X)); }
-    public static float MouseY { get => Input.GetAxis((Shortcuts.MOUSE_Y)); }
-    public static bool Attack { get => Input.GetMouseButton((Shortcuts.MOUSE_BTN_LEFT)); }
-    public static bool Jump { get => Input.GetKey((KeyCode)Enum.Parse(typeof(KeyCode), Shortcuts.JUMP)); }
-}
-
-public enum InputCode
-{
-    Forward,
-    Right,
-    MouseX,
-    MouseY,
-    Attack,
-    Jump
+    public class InputHandler
+    {
+        public static float Forward { get => Input.GetAxis(Shortcuts.VERTICAL); }
+        public static float Right { get => Input.GetAxis(Shortcuts.HORIZONTAL); }
+        public static float MouseX { get => Input.GetAxis((Shortcuts.MOUSE_X)); }
+        public static float MouseY { get => Input.GetAxis((Shortcuts.MOUSE_Y)); }
+        public static bool Attack { get => Input.GetMouseButton((Shortcuts.MOUSE_BTN_LEFT)); }
+        public static bool Jump { get => Input.GetKey((KeyCode)Enum.Parse(typeof(KeyCode), Shortcuts.JUMP)); }
+    }
 }

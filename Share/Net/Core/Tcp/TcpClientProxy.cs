@@ -129,7 +129,8 @@ namespace GFramework.Network
         public void Dispose()
         {
             if (this.socket == null) return;
-            this.socket.Shutdown(SocketShutdown.Both);
+            if (this.socket.Connected)
+                this.socket.Shutdown(SocketShutdown.Both);
             this.socket.Close();
             this.socket.Dispose();
         }

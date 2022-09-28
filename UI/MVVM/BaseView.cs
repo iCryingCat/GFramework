@@ -2,19 +2,16 @@
 
 namespace GFramework.UI
 {
-    public abstract class BaseView<T> : IView, IBinding<T> where T : BaseViewModel
+    public abstract class BaseView<T> : Component, IView, IBinding<T> where T : BaseViewModel
     {
-        // 父节点 
-        public IView parent = null;
-
         // 绑定的ViewModel
         private readonly BindableProperty<T> model = new BindableProperty<T>();
 
         // ui游戏物体
-        protected GameObject gameObject;
+        public GameObject gameObject { get; private set; }
 
         // ui变换组件
-        protected Transform transform;
+        public Transform transform { get; private set; }
 
         // mono组件
         protected UIContainer uiContainer;
@@ -38,11 +35,9 @@ namespace GFramework.UI
                     Initialize();
                     isInitialized = true;
                 }
-
                 model.Value = value;
             }
         }
-
 
         private void OnContextChanged(T old, T value)
         {
@@ -88,15 +83,24 @@ namespace GFramework.UI
 
         protected T GetVar<T>(int index) where T : Component
         {
-            return uiContainer.GetVar<T>(index);
+            return this.uiContainer.GetVar(index).component as T;
         }
 
-        public void BindGO(GameObject go)
+        protected T1 GetVar<T1, T2>(int index) where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
+        {
+            UIVar var = this.uiContainer.GetVar(index);
+            T1 view = UIMgr.NewUI<T1, T2>();
+            view.BindGO(var.gameObject, true);
+            return view;
+        }
+
+        public void BindGO(GameObject go, bool exist = false)
         {
             this.gameObject = go;
             this.transform = go.transform;
             this.uiContainer = go.GetComponent<UIContainer>();
-            this.transform.SetParentOfUI(this.uiContainer.layer, this.uiContainer.node);
+            if (!exist)
+                this.transform.SetParentOfUI(this.uiContainer.layer, this.uiContainer.node);
             Load();
         }
 
@@ -108,6 +112,7 @@ namespace GFramework.UI
         }
 
         public abstract string BindingPath();
+        public virtual void BindProperty() { }
         protected virtual void BindVars() { }
         protected virtual void BindEvents() { }
         protected virtual void OnLoaded() { }

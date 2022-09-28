@@ -101,7 +101,7 @@ namespace GFramework.EditorExtern
 
             string namePath = path.Substring(PathUtil.AssetsPath.Length + 1);
             namePath = namePath.Substring(namePath.IndexOf("/") + 1);
-            string name = namePath.Replace(namePath.GetLastFileName(), "unity3d");
+            string name = namePath.Replace(namePath.GetLastFieldName(), "unity3d");
             assetImporter.assetBundleName = name;
         }
 

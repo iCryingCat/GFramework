@@ -3,7 +3,7 @@
 namespace GFramework.Network
 {
     // Rpc 请求回调
-    public delegate void RpcCallBack(Object resp);
+    public delegate void RpcCallBack(object resp);
 
     // 客户端请求消息
     public interface ICaller { }
