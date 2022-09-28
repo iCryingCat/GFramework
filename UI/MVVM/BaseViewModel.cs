@@ -6,12 +6,7 @@ namespace GFramework.UI
     {
         public IView bindingView;
 
-        public virtual void Init(BaseData data)
-        {
-
-        }
-
-        public virtual void Dispose()
+        public virtual void Init<T>(T data) where T : BaseData
         {
 
         }

@@ -6,15 +6,14 @@ using System.Net.Sockets;
 
 namespace GFramework.Network
 {
-    public class UdpServerProxy<T1, T2> : AChannel where T1 : ADispatcher, new() where T2 : APacker, new()
+    public class UdpServerProxy<T1, T2> : AChannel, IDisposable where T1 : ADispatcher, new() where T2 : APacker, new()
     {
         GLogger logger = new GLogger("UdpServerProxy");
 
         private Dictionary<IPEndPoint, UdpClientProxy> clientProxyMap = new Dictionary<IPEndPoint, UdpClientProxy>();
         private UdpClient udpClient;
-        private IPEndPoint iPEndPoint;
 
-        public UdpServerProxy(IPEndPoint iPEndPoint) : base(new T1(), new T2())
+        public UdpServerProxy(IPEndPoint iPEndPoint) : base(iPEndPoint, new T1(), new T2())
         {
             this.udpClient = new UdpClient(iPEndPoint);
         }

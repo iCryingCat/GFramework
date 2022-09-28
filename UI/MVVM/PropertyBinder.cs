@@ -41,7 +41,6 @@ namespace GFramework.UI
             var value = fieldInfo.GetValue(viewModel);
 
             BindableProperty<TProperty> bindableProperty = value as BindableProperty<TProperty>;
-            Debug.Log("121212");
             // 如果没有目标属性,抛出异常
             if (bindableProperty == null)
             {

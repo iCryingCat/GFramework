@@ -120,12 +120,12 @@ namespace GFramework.EditorExtern
                         if (uiContainer != null)
                         {
                             fieldsSB.AppendLine($"    private {uiContainer.bindingViewType} {fieldName};");
-                            varsSB.AppendLine($"        {fieldName} = this.GetVar<{uiContainer.bindingViewType},{uiContainer.bindingViewModelType}>({j});");
+                            varsSB.AppendLine($"        this.{fieldName} = this.GetVar<{uiContainer.bindingViewType},{uiContainer.bindingViewModelType}>({j});");
                         }
                         else
                         {
                             fieldsSB.AppendLine($"    private {fieldType} {fieldName};");
-                            varsSB.AppendLine($"        {fieldName} = this.GetVar<{fieldType}>({j});");
+                            varsSB.AppendLine($"        this.{fieldName} = this.GetVar<{fieldType}>({j});");
                         }
                     }
                     varsSB.AppendLine($"    }}");

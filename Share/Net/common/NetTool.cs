@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace GFramework.Network
 {
@@ -69,5 +71,24 @@ namespace GFramework.Network
             }
             return port;
         }
+
+        public static IPAddress GetLocalHost()
+        {
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+
+            IPAddress localHost = host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+            return localHost;
+        }
+
+        public static ulong GenNetID(IPEndPoint iPEndPoint)
+        {
+            int seed = (int)DateTime.Now.Ticks;
+            Random rand = new Random(seed);
+            string address = iPEndPoint.Address.GetHashCode().ToString();
+            string port = iPEndPoint.Port.GetHashCode().ToString();
+            ulong netID = ulong.Parse(address + port) + (ulong)rand.Next();
+            return netID;
+        }
+
     }
 }

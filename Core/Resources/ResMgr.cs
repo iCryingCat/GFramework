@@ -1,6 +1,7 @@
 ﻿using System.IO;
-using GFramework.Core;
+
 using GFramework.Util;
+
 using UnityEngine;
 
 namespace GFramework
@@ -16,7 +17,7 @@ namespace GFramework
         private static T Load<T>(string bundleName, string assetName) where T : UnityEngine.Object
         {
 #if UNITY_EDITOR
-            if (Solution.loadMode == ResLoadMode.Local)
+            if (Solution.loadMode == RuntimeMode.Debug)
             {
                 string path = Path.Combine(bundleName, assetName).PathFormat();
                 logger.P($"使用本地模式加载: {path}");

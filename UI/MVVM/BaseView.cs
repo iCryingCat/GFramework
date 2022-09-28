@@ -2,7 +2,7 @@
 
 namespace GFramework.UI
 {
-    public abstract class BaseView<T> : Component, IView, IBinding<T> where T : BaseViewModel
+    public abstract class BaseView<T> : IView, IBinding<T> where T : BaseViewModel
     {
         // 绑定的ViewModel
         private readonly BindableProperty<T> model = new BindableProperty<T>();

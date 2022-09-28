@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 
-using GFramework.Core;
-
 using UnityEditor;
 
 using UnityEngine;
@@ -82,7 +80,7 @@ namespace GFramework.EditorExtern
         [MenuItem(MENU_ROOT + "Resources Load Mode/Local", false)]
         public static void SetLoadModeToLocal()
         {
-            Solution.loadMode = ResLoadMode.Local;
+            Solution.loadMode = RuntimeMode.Debug;
             string path = MENU_ROOT + "Resources Load Mode/Local";
             bool isSelected = Menu.GetChecked(path);
             if (!isSelected)
@@ -95,7 +93,7 @@ namespace GFramework.EditorExtern
         [MenuItem(MENU_ROOT + "Resources Load Mode/AssetBundle", false)]
         public static void SetLoadModeToAB()
         {
-            Solution.loadMode = ResLoadMode.AssetBundle;
+            Solution.loadMode = RuntimeMode.Release;
             string path = MENU_ROOT + "Resources Load Mode/AssetBundle";
             bool isSelected = Menu.GetChecked(path);
             if (!isSelected)

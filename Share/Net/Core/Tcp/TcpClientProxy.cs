@@ -11,14 +11,18 @@ namespace GFramework.Network
     /// 异步接收消息，存入消息对象
     /// 提供发送消息接口
     /// </summary>
-    public class TcpClientProxy : AChannel, IClientProxy
+    public class TcpClientProxy : AChannel, IClientProxy, IDisposable
     {
         GLogger logger = new GLogger("TcpClientProxy");
 
         private Socket socket;
 
-        public TcpClientProxy(ADispatcher dispatcher, APacker packer) : base(dispatcher, packer) { }
-        public TcpClientProxy(Socket socket, ADispatcher dispatcher, APacker packer) : base(dispatcher, packer)
+        public TcpClientProxy(int port, ADispatcher dispatcher, APacker packer) : base(new IPEndPoint(IPAddress.Parse("0.0.0.0"), port), dispatcher, packer)
+        {
+            this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        }
+
+        public TcpClientProxy(Socket socket, ADispatcher dispatcher, APacker packer) : base(socket.RemoteEndPoint as IPEndPoint, dispatcher, packer)
         {
             this.socket = socket;
         }
@@ -32,11 +36,8 @@ namespace GFramework.Network
         // 连接到服务器
         public void Connect(IPEndPoint iPEndPoint)
         {
-            if (this.socket == null)
-                this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            int port = NetTool.GetAvailablePort();
-            this.socket.Bind(new IPEndPoint(IPAddress.Parse("0.0.0.0"), port));
-            logger.P($"尝试以端口：{port} 连接服务器...");
+            this.socket.Bind(this.iPEndPoint);
+            logger.P($"尝试以端口：{this.iPEndPoint.Port} 连接服务器...");
             this.socket.BeginConnect(iPEndPoint, OnConnected, this.socket);
         }
 
@@ -94,7 +95,8 @@ namespace GFramework.Network
 
         public override void BeginReceive()
         {
-            socket.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+            if (this.socket.Connected)
+                socket.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
         }
 
         // 接收到服务器消息回调
@@ -110,7 +112,6 @@ namespace GFramework.Network
                     this.Dispose();
                     return;
                 }
-
                 logger.P($"收到--{remote}--的消息，数据长度：{bufferSize}");
 
                 List<Tuple<ProtoDefine, byte[]>> protos = this.packer.UnPack(ref buffer, ref bufferSize);
@@ -118,6 +119,7 @@ namespace GFramework.Network
                 {
                     this.dispatcher.DecodeForm(protos[i].Item1, protos[i].Item2);
                 }
+
                 socket.BeginReceive(buffer, bufferSize, maxBufferSize, SocketFlags.None, OnReceived, buffer);
             }
             catch (Exception ex)
@@ -128,9 +130,9 @@ namespace GFramework.Network
 
         public void Dispose()
         {
-            if (this.socket == null) return;
-            if (this.socket.Connected)
-                this.socket.Shutdown(SocketShutdown.Both);
+            if (this.socket == null)
+                return;
+            this.socket.Shutdown(SocketShutdown.Both);
             this.socket.Close();
             this.socket.Dispose();
         }

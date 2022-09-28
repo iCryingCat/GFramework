@@ -1,30 +1,28 @@
-﻿namespace GFramework.Core
+﻿namespace GFramework
 {
-    /// <summary>
-    /// 资源加载方式
-    /// </summary>
-    public enum ResLoadMode
+    // 资源加载方式
+    public enum RuntimeMode
+    {
+        // 本地加载
+        Debug,
+        // ab加载
+        Release,
+    }
+
+
+    // 资源加载方式
+    public enum NetMode
     {
         // 本地加载
         Local,
         // ab加载
-        AssetBundle,
-    }
-
-    /// <summary>
-    /// 资源加载方式
-    /// </summary>
-    public enum RuntimeMode
-    {
-        // 本地加载
-        Release,
-        // ab加载
-        Debug,
+        Server,
     }
 
     public static class Solution
     {
-        public static ResLoadMode loadMode = ResLoadMode.Local;
-        public static RuntimeMode runtimeMode = RuntimeMode.Debug;
+        public static RuntimeMode loadMode = RuntimeMode.Debug;
+
+        public static NetMode netMode = NetMode.Local;
     }
 }

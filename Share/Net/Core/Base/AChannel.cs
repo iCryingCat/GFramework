@@ -1,19 +1,18 @@
-﻿namespace GFramework.Network
+﻿using System.Net;
+namespace GFramework.Network
 {
-    // 消息通道
     public abstract class AChannel
     {
-        // 消息分发器
+        public IPEndPoint iPEndPoint { get; }
         public ADispatcher dispatcher { get; }
-        // 消息打包器
         public APacker packer { get; }
-
         protected byte[] buffer;
         protected int bufferSize = 0;
         protected int maxBufferSize = 2048;
 
-        public AChannel(ADispatcher dispatcher, APacker packer)
+        public AChannel(IPEndPoint iPEndPoint, ADispatcher dispatcher, APacker packer)
         {
+            this.iPEndPoint = iPEndPoint;
             this.dispatcher = dispatcher;
             this.dispatcher.channel = this;
             this.packer = packer;
@@ -21,7 +20,7 @@
             this.bufferSize = 0;
         }
 
-        public abstract void Send(ProtoDefine define, byte[] data);
         public virtual void BeginReceive() { }
+        public abstract void Send(ProtoDefine define, byte[] data);
     }
 }

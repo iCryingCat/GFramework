@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace GFramework.Network
 {
-    public class TcpServerProxy<T1, T2> : AChannel, IServerProxy where T1 : ADispatcher, new() where T2 : APacker, new()
+    public class TcpServerProxy<T1, T2> : AChannel, IServerProxy, IDisposable where T1 : ADispatcher, new() where T2 : APacker, new()
     {
         GLogger logger = new GLogger("TcpServerProxy");
 
@@ -14,7 +14,7 @@ namespace GFramework.Network
         private Dictionary<IPEndPoint, TcpClientProxy> clientProxyMap = new Dictionary<IPEndPoint, TcpClientProxy>();
         private const int maxAcceptNum = 1024;
 
-        public TcpServerProxy(IPEndPoint iPEndPoint) : base(new T1(), new T2())
+        public TcpServerProxy(IPEndPoint iPEndPoint) : base(iPEndPoint, new T1(), new T2())
         {
             this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.socket.Bind(iPEndPoint);
@@ -37,6 +37,7 @@ namespace GFramework.Network
                 IPEndPoint endPoint = (IPEndPoint)client.RemoteEndPoint!;
                 if (null == endPoint) return;
                 clientProxyMap[endPoint] = clientProxy;
+                this.socket.BeginAccept(OnAccepted, this.socket);
             }
             catch (Exception e)
             {
