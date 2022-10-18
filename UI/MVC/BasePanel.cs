@@ -24,7 +24,7 @@ namespace GFramework.UI
             this.gameObject.SetActive(false);
         }
 
-        public abstract string BindingPath();
+        public abstract string BindPath();
 
         public void Hide()
         {

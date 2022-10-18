@@ -8,7 +8,7 @@ namespace GFramework.UI
     // UI面板接口
     public interface IView
     {
-        string BindingPath();
+        string BindPath();
         void Show();
         void Hide();
         void Close();

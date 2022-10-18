@@ -19,13 +19,14 @@ namespace GFramework.Network
 
         public UdpClientProxy(IPEndPoint iPEndPoint, ADispatcher dispatcher, APacker packer) : base(iPEndPoint, dispatcher, packer)
         {
-            this.udpClient = new UdpClient(iPEndPoint);
+            this.udpClient = new UdpClient();
+            this.udpClient.Connect(iPEndPoint);
         }
 
         public override void Send(ProtoDefine define, byte[] msg)
         {
             byte[] data = this.packer.Pack(define, msg);
-            this.udpClient.SendAsync(data, data.Length, iPEndPoint);
+            this.udpClient.SendAsync(data, data.Length);
         }
 
         public override void BeginReceive()

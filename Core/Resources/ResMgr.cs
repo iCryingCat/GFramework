@@ -16,14 +16,14 @@ namespace GFramework
         // 加载资源
         private static T Load<T>(string bundleName, string assetName) where T : UnityEngine.Object
         {
-#if UNITY_EDITOR
+            // #if UNITY_EDITOR
             if (Solution.loadMode == RuntimeMode.Debug)
             {
                 string path = Path.Combine(bundleName, assetName).PathFormat();
                 logger.P($"使用本地模式加载: {path}");
                 return AssetMgr.Load<T>(path);
             }
-#endif
+            // #endif
             return BundleMgr.Load<T>(bundleName, assetName);
         }
 

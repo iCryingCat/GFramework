@@ -11,6 +11,11 @@ public class MonoLoop : DntdMonoSingleton<MonoLoop>
     private event Action onFixedUpdate;
     private event Action onLateUpdate;
 
+    private void Start()
+    {
+        Loom.Initialize();
+    }
+
     private void Update()
     {
         if (onUpdate != null) onUpdate();
@@ -53,10 +58,5 @@ public class MonoLoop : DntdMonoSingleton<MonoLoop>
     public void RemoveLateUpdateListener(Action action)
     {
         onLateUpdate -= action;
-    }
-
-    public void Instantiate(string name)
-    {
-        new GameObject(name);
     }
 }

@@ -20,7 +20,7 @@ public class UIMgr
     // 单例ui
     private static Dictionary<Type, IView> singleViewMap = new Dictionary<Type, IView>();
     // 其他ui
-    private static Dictionary<string, GameObject> mulViewMap = new Dictionary<string, GameObject>();
+    private static Stack<IView> mainStack = new Stack<IView>();
 
     /// <summary>
     /// 获取单例面板
@@ -35,6 +35,17 @@ public class UIMgr
         return (T)singleViewMap[typeof(T)];
     }
 
+    public static void PopUI()
+    {
+        if (mainStack == null)
+        {
+            mainStack = new Stack<IView>();
+            return;
+        }
+        if (mainStack.Count <= 0) return;
+        mainStack.Pop().Close();
+    }
+
     /// <summary>
     /// 生成一个新面板
     /// </summary>
@@ -44,7 +55,7 @@ public class UIMgr
     {
         T1 view = new T1();
         T2 viewModel = new T2();
-        view.BindProperty();
+        view.BindProp();
         view.BindingContext = viewModel;
         viewModel.bindingView = view;
 
@@ -60,7 +71,7 @@ public class UIMgr
 
     private static void LoadUI<T1, T2>(T1 view) where T1 : BaseView<T2>, new() where T2 : BaseViewModel, new()
     {
-        string prefabPath = view.BindingPath();
+        string prefabPath = view.BindPath();
         GameObject uiPref = ResMgr.LoadUI<GameObject>(prefabPath);
         GameObject uiGO = ResMgr.Instantiate(uiPref);
         Debug.Assert(uiGO);
@@ -93,6 +104,7 @@ public class UIMgr
             view = NewUI<T1, T2>();
             LoadUI<T1, T2>(view);
         }
+        mainStack.Push(view);
         view.Show();
         return view;
     }

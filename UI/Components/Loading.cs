@@ -11,7 +11,7 @@ namespace GFramework
         Slider slider;
         Text tips;
 
-        public override string BindingPath()
+        public override string BindPath()
         {
             return "";
         }

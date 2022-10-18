@@ -16,13 +16,13 @@
         // 本地加载
         Local,
         // ab加载
-        Server,
+        Network,
     }
 
     public static class Solution
     {
         public static RuntimeMode loadMode = RuntimeMode.Debug;
 
-        public static NetMode netMode = NetMode.Local;
+        public static NetMode netMode = NetMode.Network;
     }
 }

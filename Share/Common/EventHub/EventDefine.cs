@@ -5,11 +5,7 @@
     /// </summary>
     public enum EventDefine
     {
-        CGPlayFinished,
-        QQLogin,
-        EnterHome,
-        SendChatMessage,
-        ReceivedChatMessage,
+        PlayerJoinRoom,
     }
 
     public delegate void CallBack();

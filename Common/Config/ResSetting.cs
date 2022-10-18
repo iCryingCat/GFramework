@@ -2,7 +2,7 @@
 {
     public class ResSetting
     {
-        public const string UI = "Res/Prefabs/UI";
+        public const string UI = "Prefabs/UI";
     }
 
     public class AtlasSetting

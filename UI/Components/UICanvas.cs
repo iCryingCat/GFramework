@@ -32,7 +32,7 @@ namespace GFramework.UI
 
         public static void Setup()
         {
-            GameObject rootPreb = ResMgr.LoadUI<GameObject>("UIRoot.prefab");
+            GameObject rootPreb = ResMgr.LoadUI<GameObject>("UIRoot");
             Transform root = ResMgr.Instantiate<GameObject>(rootPreb).transform;
             root.SetParent(GameObject.Find("Game").transform);
             Canvas canvas = root.GetComponent<Canvas>();

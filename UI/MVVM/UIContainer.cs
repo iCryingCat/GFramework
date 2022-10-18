@@ -5,6 +5,16 @@ using UnityEngine;
 
 namespace GFramework.UI
 {
+
+    [Serializable]
+    public class UIVar
+    {
+        // 字段名字
+        public string fieldName;
+        public GameObject gameObject;
+        public Component component;
+    }
+
     public class UIContainer : MonoBehaviour
     {
         public UILayer layer;
@@ -20,14 +30,5 @@ namespace GFramework.UI
                 return null;
             return this.varsArr[index];
         }
-    }
-
-    [Serializable]
-    public class UIVar
-    {
-        // 字段名字
-        public string fieldName;
-        public GameObject gameObject;
-        public Component component;
     }
 }

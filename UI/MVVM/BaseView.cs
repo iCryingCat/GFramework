@@ -111,8 +111,8 @@ namespace GFramework.UI
             this.OnLoaded();
         }
 
-        public abstract string BindingPath();
-        public virtual void BindProperty() { }
+        public abstract string BindPath();
+        public virtual void BindProp() { }
         protected virtual void BindVars() { }
         protected virtual void BindEvents() { }
         protected virtual void OnLoaded() { }
