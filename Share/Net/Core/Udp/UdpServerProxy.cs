@@ -6,16 +6,17 @@ using System.Net.Sockets;
 
 namespace GFramework.Network
 {
-    public class UdpServerProxy<T1, T2> : AChannel, IDisposable where T1 : ADispatcher, new() where T2 : APacker, new()
+    public class UdpServerProxy : AChannel, IDisposable
     {
         GLogger logger = new GLogger("UdpServerProxy");
 
         private Dictionary<IPEndPoint, UdpClientProxy> clientProxyMap = new Dictionary<IPEndPoint, UdpClientProxy>();
         private UdpClient udpClient;
 
-        public UdpServerProxy(IPEndPoint iPEndPoint) : base(iPEndPoint, new T1(), new T2())
+        public UdpServerProxy(IPEndPoint iPEndPoint, ADispatcher dispatcher, IPacker packer) : base(iPEndPoint, dispatcher, packer)
         {
             this.udpClient = new UdpClient(iPEndPoint);
+
         }
 
         public override void Send(ProtoDefine define, byte[] msg)
@@ -24,7 +25,7 @@ namespace GFramework.Network
             this.udpClient.SendAsync(data, data.Length, iPEndPoint);
         }
 
-        public override void BeginReceive()
+        public void BeginReceive()
         {
             this.udpClient.BeginReceive(OnRecevied, buffer);
         }
@@ -33,11 +34,11 @@ namespace GFramework.Network
         {
             try
             {
-                IPEndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+                IPEndPoint remote = null;
                 byte[] data = this.udpClient.EndReceive(ar, ref remote);
-                buffer = buffer.Concat(data).ToArray();
+                Array.Copy(data, 0, this.buffer, this.bufferSize, data.Length);
                 bufferSize += data.Length;
-                logger.P($"收到包长度：{bufferSize}");
+                logger.P($"收到{remote}消息，包长度：{bufferSize}");
                 List<Tuple<ProtoDefine, byte[]>> protos = this.packer.UnPack(ref buffer, ref bufferSize);
                 for (int i = 0; i < protos.Count; ++i)
                 {

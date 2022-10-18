@@ -11,34 +11,47 @@ namespace GFramework.Network
     /// 异步接收消息，存入消息对象
     /// 提供发送消息接口
     /// </summary>
-    public class TcpClientProxy : AChannel, IClientProxy, IDisposable
+    public class TcpClientProxy : AChannel, IDisposable
     {
         GLogger logger = new GLogger("TcpClientProxy");
 
-        private Socket socket;
+        private TcpClient tcpClient;
 
-        public TcpClientProxy(int port, ADispatcher dispatcher, APacker packer) : base(new IPEndPoint(IPAddress.Parse("0.0.0.0"), port), dispatcher, packer)
+        public TcpClientProxy(TcpClient tcpClient, ADispatcher dispatcher, IPacker packer) : base(tcpClient.Client.RemoteEndPoint as IPEndPoint, dispatcher, packer)
         {
-            this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        }
-
-        public TcpClientProxy(Socket socket, ADispatcher dispatcher, APacker packer) : base(socket.RemoteEndPoint as IPEndPoint, dispatcher, packer)
-        {
-            this.socket = socket;
-        }
-
-        // FIXME: 注册回调事件结构有待改善
-        public void RegisterMsg(RpcCallBack response)
-        {
-            this.dispatcher.RegisterMsg(response);
+            this.tcpClient = tcpClient;
         }
 
         // 连接到服务器
         public void Connect(IPEndPoint iPEndPoint)
         {
-            this.socket.Bind(this.iPEndPoint);
-            logger.P($"尝试以端口：{this.iPEndPoint.Port} 连接服务器...");
-            this.socket.BeginConnect(iPEndPoint, OnConnected, this.socket);
+            logger.P($"尝试以{this.tcpClient.Client.LocalEndPoint} 连接服务器{iPEndPoint}...");
+            this.tcpClient.BeginConnect(iPEndPoint.Address, iPEndPoint.Port, OnConnected, this.tcpClient);
+        }
+
+        public override void Send(ProtoDefine define, byte[] msg)
+        {
+            if (this.tcpClient.Connected)
+            {
+                byte[] data = this.packer.Pack(define, msg);
+                this.tcpClient.Client.BeginSend(data, 0, data.Length, SocketFlags.None, OnSended, data);
+            }
+            else
+            {
+                logger.E("网络未连接！！！");
+            }
+        }
+
+        public void BeginReceive()
+        {
+            if (this.tcpClient.Connected)
+            {
+                this.tcpClient.Client.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+            }
+            else
+            {
+                logger.E("网络未连接！！！");
+            }
         }
 
         /// <summary>
@@ -50,14 +63,14 @@ namespace GFramework.Network
         {
             try
             {
-                this.socket.EndConnect(ar);
-                if (this.socket.Connected)
+                this.tcpClient.EndConnect(ar);
+                if (this.tcpClient.Connected)
                 {
-                    logger.P($"端口{this.socket.LocalEndPoint}连接成功!");
+                    logger.P($"端口{this.tcpClient.Client.LocalEndPoint}连接{this.tcpClient.Client.RemoteEndPoint}成功！！！");
                 }
                 else
                 {
-                    logger.P("连接失败！!");
+                    logger.P("连接失败！！！");
                 }
                 this.BeginReceive();
             }
@@ -67,25 +80,12 @@ namespace GFramework.Network
             }
         }
 
-        public override void Send(ProtoDefine define, byte[] msg)
-        {
-            if (this.socket.Connected)
-            {
-                byte[] data = this.packer.Pack(define, msg);
-                socket.BeginSend(data, 0, data.Length, SocketFlags.None, OnSended, data);
-            }
-            else
-            {
-                logger.E("网络未连接");
-            }
-        }
-
         private void OnSended(IAsyncResult ar)
         {
             try
             {
-                int count = socket.EndSend(ar);
-                logger.P($"成功发送大小为{count}的数据");
+                int count = this.tcpClient.Client.EndSend(ar);
+                logger.P($"向{this.tcpClient.Client.RemoteEndPoint}成功发送{count}字节数据！！！");
             }
             catch (Exception ex)
             {
@@ -93,26 +93,20 @@ namespace GFramework.Network
             }
         }
 
-        public override void BeginReceive()
-        {
-            if (this.socket.Connected)
-                socket.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
-        }
-
         // 接收到服务器消息回调
         protected void OnReceived(IAsyncResult ar)
         {
             try
             {
-                int bufferSize = socket.EndReceive(ar);
-                IPEndPoint remote = (IPEndPoint)socket.RemoteEndPoint;
+                int bufferSize = this.tcpClient.Client.EndReceive(ar);
+                var remote = this.tcpClient.Client.RemoteEndPoint;
                 if (bufferSize <= 0)
                 {
-                    logger.P($"客户端 {remote} 断开连接！！！");
+                    logger.P($"与{remote}断开连接！！！");
                     this.Dispose();
                     return;
                 }
-                logger.P($"收到--{remote}--的消息，数据长度：{bufferSize}");
+                logger.P($"收到{remote}>>{bufferSize}字节数据！！！");
 
                 List<Tuple<ProtoDefine, byte[]>> protos = this.packer.UnPack(ref buffer, ref bufferSize);
                 for (int i = 0; i < protos.Count; ++i)
@@ -120,7 +114,7 @@ namespace GFramework.Network
                     this.dispatcher.DecodeForm(protos[i].Item1, protos[i].Item2);
                 }
 
-                socket.BeginReceive(buffer, bufferSize, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+                this.tcpClient.Client.BeginReceive(buffer, bufferSize, maxBufferSize, SocketFlags.None, OnReceived, buffer);
             }
             catch (Exception ex)
             {
@@ -130,11 +124,9 @@ namespace GFramework.Network
 
         public void Dispose()
         {
-            if (this.socket == null)
+            if (this.tcpClient == null)
                 return;
-            this.socket.Shutdown(SocketShutdown.Both);
-            this.socket.Close();
-            this.socket.Dispose();
+            this.tcpClient.Close();
         }
     }
 }

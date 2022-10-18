@@ -17,21 +17,39 @@ namespace GFramework.Network
 
         private UdpClient udpClient;
 
-        public UdpClientProxy(IPEndPoint iPEndPoint, ADispatcher dispatcher, APacker packer) : base(iPEndPoint, dispatcher, packer)
+        public UdpClientProxy(IPEndPoint iPEndPoint, ADispatcher dispatcher, IPacker packer) : base(iPEndPoint, dispatcher, packer)
         {
-            this.udpClient = new UdpClient();
+            this.udpClient = new UdpClient(iPEndPoint);
+        }
+
+        public void Connect(IPEndPoint iPEndPoint)
+        {
             this.udpClient.Connect(iPEndPoint);
         }
 
         public override void Send(ProtoDefine define, byte[] msg)
         {
             byte[] data = this.packer.Pack(define, msg);
-            this.udpClient.SendAsync(data, data.Length);
+            this.udpClient.BeginSend(data, data.Length, OnSended, this.udpClient);
+            logger.P($"向{this.iPEndPoint}发送{define}消息！！！");
         }
 
-        public override void BeginReceive()
+        public void BeginReceive()
         {
             this.udpClient.BeginReceive(OnRecevied, buffer);
+        }
+
+        private void OnSended(IAsyncResult ar)
+        {
+            try
+            {
+                int count = this.udpClient.EndSend(ar);
+                logger.P($"成功发送大小为{count}的数据");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         private void OnRecevied(IAsyncResult ar)

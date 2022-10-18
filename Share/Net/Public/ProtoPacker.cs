@@ -4,13 +4,19 @@ using System.Linq;
 
 namespace GFramework.Network
 {
-    public class ProtoPacker : APacker
+    public class ProtoPacker : IPacker
     {
         GLogger logger = new GLogger("ProtoPacker");
 
+        // 包长度字段字节数
+        private const int PACKET_SIZE_NUM = 4;
+
+        // 协议名长度
+        private const int PROTO_DEFINE_NUM = 4;
+
         // 打包协议
         // 包长度+协议名称+数据
-        public override byte[] Pack(ProtoDefine protoDefine, byte[] data)
+        public byte[] Pack(ProtoDefine protoDefine, byte[] data)
         {
             List<byte> packet = new List<byte>();
             byte[] packetSize = BitConverter.GetBytes(PROTO_DEFINE_NUM + data.Length);
@@ -22,7 +28,7 @@ namespace GFramework.Network
         }
 
         // 拆包
-        public override List<Tuple<ProtoDefine, byte[]>> UnPack(ref byte[] buffer, ref int bufferSize)
+        public List<Tuple<ProtoDefine, byte[]>> UnPack(ref byte[] buffer, ref int bufferSize)
         {
             byte[] temp = new byte[bufferSize];
             int tempSize = bufferSize;
@@ -48,7 +54,7 @@ namespace GFramework.Network
             byte[] packetSizeNum = new byte[PACKET_SIZE_NUM];
             Array.Copy(buffer, packetSizeNum, PACKET_SIZE_NUM);
             int packetSize = BitConverter.ToInt32(packetSizeNum, 0);
-            logger.P($"包长度：{packetSize}");
+            logger.P($"当前包体长度：{packetSize}！！！");
 
             // 当前包还未接收完
             if (bufferSize - PACKET_SIZE_NUM < packetSize)
@@ -84,12 +90,11 @@ namespace GFramework.Network
             // 如果协议不存在
             if (!Enum.IsDefined(typeof(ProtoDefine), defineInt))
             {
-                logger.E($"不存在该协议ID{defineInt}");
-                return null;
+                throw new Exception($"不存在该协议ID{defineInt}？？？");
             }
 
             ProtoDefine define = (ProtoDefine)defineInt;
-            logger.P($"解析到{define}类型消息");
+            logger.P($"收到{define}类型的消息！！！");
 
             // 读取协议字节
             int dataSize = packetSize - PROTO_DEFINE_NUM;

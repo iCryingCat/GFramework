@@ -3,24 +3,21 @@ namespace GFramework.Network
 {
     public abstract class AChannel
     {
-        public IPEndPoint iPEndPoint { get; }
-        public ADispatcher dispatcher { get; }
-        public APacker packer { get; }
+        public readonly IPEndPoint iPEndPoint;
+        public readonly ADispatcher dispatcher;
+        public readonly IPacker packer;
         protected byte[] buffer;
         protected int bufferSize = 0;
-        protected int maxBufferSize = 2048;
+        protected const int maxBufferSize = 2048;
 
-        public AChannel(IPEndPoint iPEndPoint, ADispatcher dispatcher, APacker packer)
+        public AChannel(IPEndPoint iPEndPoint, ADispatcher dispatcher, IPacker packer)
         {
             this.iPEndPoint = iPEndPoint;
+            this.packer = packer;
             this.dispatcher = dispatcher;
             this.dispatcher.channel = this;
-            this.packer = packer;
-            this.buffer = new byte[maxBufferSize];
-            this.bufferSize = 0;
         }
 
-        public virtual void BeginReceive() { }
         public abstract void Send(ProtoDefine define, byte[] data);
     }
 }
