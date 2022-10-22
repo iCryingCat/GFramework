@@ -16,6 +16,8 @@ namespace GFramework.Network
             this.packer = packer;
             this.dispatcher = dispatcher;
             this.dispatcher.channel = this;
+            this.buffer = new byte[maxBufferSize];
+            this.bufferSize = 0;
         }
 
         public abstract void Send(ProtoDefine define, byte[] data);

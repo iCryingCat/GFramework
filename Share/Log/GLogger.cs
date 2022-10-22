@@ -20,21 +20,21 @@ namespace GFramework
 
         public void P(object info)
         {
-            string infoData = LogDumper.DumpAsString(info);
+            string infoData = new LogDumper().DumpAsString(info);
             string msg = PrintFormat($"[[{owner}]] ==> {infoData}");
             Log(msg);
         }
 
         public void W(object info)
         {
-            string infoData = LogDumper.DumpAsString(info);
+            string infoData = new LogDumper().DumpAsString(info);
             string msg = WarningFormat($"[[{owner}]] ==> {infoData}");
             Log(msg);
         }
 
         public void E(object info)
         {
-            string infoData = LogDumper.DumpAsString(info);
+            string infoData = new LogDumper().DumpAsString(info);
             string msg = ErrorFormat($"[[{owner}]] ==> {infoData}");
             Log(msg);
         }

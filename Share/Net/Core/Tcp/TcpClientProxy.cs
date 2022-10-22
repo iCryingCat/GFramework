@@ -23,10 +23,10 @@ namespace GFramework.Network
         }
 
         // 连接到服务器
-        public void Connect(IPEndPoint iPEndPoint)
+        public void Connect(IPEndPoint remoteIP)
         {
-            logger.P($"尝试以{this.tcpClient.Client.LocalEndPoint} 连接服务器{iPEndPoint}...");
-            this.tcpClient.BeginConnect(iPEndPoint.Address, iPEndPoint.Port, OnConnected, this.tcpClient);
+            logger.P($"尝试以{this.tcpClient.Client.LocalEndPoint} 连接服务器{remoteIP}...");
+            this.tcpClient.BeginConnect(remoteIP.Address, remoteIP.Port, OnConnected, this.tcpClient);
         }
 
         public override void Send(ProtoDefine define, byte[] msg)
@@ -34,7 +34,7 @@ namespace GFramework.Network
             if (this.tcpClient.Connected)
             {
                 byte[] data = this.packer.Pack(define, msg);
-                this.tcpClient.Client.BeginSend(data, 0, data.Length, SocketFlags.None, OnSended, data);
+                this.tcpClient.GetStream().BeginWrite(data, 0, data.Length, OnSended, data);
             }
             else
             {
@@ -46,7 +46,8 @@ namespace GFramework.Network
         {
             if (this.tcpClient.Connected)
             {
-                this.tcpClient.Client.BeginReceive(buffer, 0, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+                this.tcpClient.GetStream().BeginRead(buffer, 0, maxBufferSize, OnReceived, buffer);
+                logger.P($"开始接收{this.iPEndPoint}的消息...");
             }
             else
             {
@@ -84,8 +85,8 @@ namespace GFramework.Network
         {
             try
             {
-                int count = this.tcpClient.Client.EndSend(ar);
-                logger.P($"向{this.tcpClient.Client.RemoteEndPoint}成功发送{count}字节数据！！！");
+                this.tcpClient.GetStream().EndWrite(ar);
+                logger.P($"向{this.tcpClient.Client.RemoteEndPoint}发送数据成功！！！");
             }
             catch (Exception ex)
             {
@@ -98,7 +99,8 @@ namespace GFramework.Network
         {
             try
             {
-                int bufferSize = this.tcpClient.Client.EndReceive(ar);
+                if (!this.tcpClient.Connected) return;
+                int bufferSize = this.tcpClient.GetStream().EndRead(ar);
                 var remote = this.tcpClient.Client.RemoteEndPoint;
                 if (bufferSize <= 0)
                 {
@@ -114,7 +116,7 @@ namespace GFramework.Network
                     this.dispatcher.DecodeForm(protos[i].Item1, protos[i].Item2);
                 }
 
-                this.tcpClient.Client.BeginReceive(buffer, bufferSize, maxBufferSize, SocketFlags.None, OnReceived, buffer);
+                this.tcpClient.GetStream().BeginRead(buffer, bufferSize, maxBufferSize, OnReceived, buffer);
             }
             catch (Exception ex)
             {

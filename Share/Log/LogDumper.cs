@@ -7,11 +7,11 @@ using UnityEngine;
 #endif
 namespace GFramework
 {
-    public static class LogDumper
+    public class LogDumper
     {
-        private static readonly StringBuilder _text = new StringBuilder("", 1024);
+        private readonly StringBuilder _text = new StringBuilder("", 1024);
 
-        private static void AppendIndent(int num)
+        private void AppendIndent(int num)
         {
             _text.Append(' ', num);
         }
@@ -22,7 +22,7 @@ namespace GFramework
         /// <param name="obj"></param>
         /// <param name="depth">防止 stack overflow</param>
         /// <param name="showField">是否遍历字段</param>
-        private static void DoDump(object obj, int depth = 100, bool showField = true)
+        private void DoDump(object obj, int depth = 100, bool showField = true)
         {
             if (obj == null)
             {
@@ -134,7 +134,7 @@ namespace GFramework
             }
         }
 
-        public static string DumpAsString(object obj, int depth = 100, bool showField = true, string hint = "")
+        public string DumpAsString(object obj, int depth = 100, bool showField = true, string hint = "")
         {
             _text.Clear();
             _text.Append(hint);

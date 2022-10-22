@@ -16,7 +16,6 @@ namespace GFramework.Network
         public UdpServerProxy(IPEndPoint iPEndPoint, ADispatcher dispatcher, IPacker packer) : base(iPEndPoint, dispatcher, packer)
         {
             this.udpClient = new UdpClient(iPEndPoint);
-
         }
 
         public override void Send(ProtoDefine define, byte[] msg)
@@ -38,7 +37,7 @@ namespace GFramework.Network
                 byte[] data = this.udpClient.EndReceive(ar, ref remote);
                 Array.Copy(data, 0, this.buffer, this.bufferSize, data.Length);
                 bufferSize += data.Length;
-                logger.P($"收到{remote}消息，包长度：{bufferSize}");
+                logger.P($"{this.udpClient.Client.LocalEndPoint}收到{remote}消息，包长度：{bufferSize}");
                 List<Tuple<ProtoDefine, byte[]>> protos = this.packer.UnPack(ref buffer, ref bufferSize);
                 for (int i = 0; i < protos.Count; ++i)
                 {

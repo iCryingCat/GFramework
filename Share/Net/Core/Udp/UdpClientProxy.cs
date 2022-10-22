@@ -19,7 +19,7 @@ namespace GFramework.Network
 
         public UdpClientProxy(IPEndPoint iPEndPoint, ADispatcher dispatcher, IPacker packer) : base(iPEndPoint, dispatcher, packer)
         {
-            this.udpClient = new UdpClient(iPEndPoint);
+            this.udpClient = new UdpClient();
         }
 
         public void Connect(IPEndPoint iPEndPoint)
@@ -31,7 +31,7 @@ namespace GFramework.Network
         {
             byte[] data = this.packer.Pack(define, msg);
             this.udpClient.BeginSend(data, data.Length, OnSended, this.udpClient);
-            logger.P($"向{this.iPEndPoint}发送{define}消息！！！");
+            logger.P($"{this.udpClient.Client.LocalEndPoint}向{this.udpClient.Client.RemoteEndPoint}发送{define}消息！！！");
         }
 
         public void BeginReceive()
